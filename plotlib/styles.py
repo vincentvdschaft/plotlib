@@ -8,7 +8,7 @@ from plotlib.constants import *
 
 
 def _get_style_dir():
-    return Path(__file__).parent.parent / "styles"
+    return Path(__file__).parent / "styles"
 
 
 def use_dark_style():
