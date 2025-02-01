@@ -15,3 +15,7 @@ packages = ['plotlib']
 
 [tool.setuptools.package-data]
 plotlib = ['styles/*']
+
+[tool.setuptools.include]
+# Include non-Python files in the distribution
+"styles/*.mplstyle" = true
