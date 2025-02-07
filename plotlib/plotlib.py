@@ -368,7 +368,7 @@ class MPLFigure:
     #     plt.close(self.fig)
 
 
-def interpret_width_height_aspect(width, height, aspect):
+def interpret_width_height_aspect(width=None, height=None, aspect=None):
     """Interprets the width, height, and aspect parameters to form just a width and height. If aspect is provided, either as a float or and extent, one of the other two parameters can be inferred.
 
     Parameters
