@@ -4,7 +4,6 @@ import matplotlib.widgets
 import numpy as np
 from matplotlib.patches import (
     ArrowStyle,
-    Circle,
     ConnectionPatch,
     FancyArrowPatch,
     Rectangle,
