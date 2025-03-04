@@ -464,7 +464,7 @@ wheels = [
 [[package]]
 name = "plotlib"
 version = "0.1.0"
-source = { editable = "." }
+source = { editable = "/home/vincent/2-files/plotlib" }
 dependencies = [
     { name = "imagelib" },
     { name = "matplotlib" },

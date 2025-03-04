@@ -367,6 +367,39 @@ class MPLFigure:
     # def __del__(self):
     #     plt.close(self.fig)
 
+    def add_legend(
+        self, x, y, width, height, labels=None, handles=None, ax=None, **kwargs
+    ):
+
+        assert ax is not None or (
+            labels is not None and handles is not None
+        ), "Either ax or labels and handles should be provided."
+        if ax is not None:
+            labels = [line.get_label() for line in ax.get_lines()]
+            handles = [line for line in ax.get_lines()]
+
+            # Also collect the labels and handles from the scatter plots
+            labels += [line.get_label() for line in ax.collections]
+            handles += [line for line in ax.collections]
+
+        legend_ax = self.add_ax(x, y, width, height)
+        bbox = Bbox.from_bounds(x, y, width, height)
+        bbox = self.bbox_norm(bbox)
+        print(f"bbox: {bbox}")
+        legend = self.fig.legend(
+            handles,
+            labels,
+            loc="upper left",
+            bbox_to_anchor=bbox,
+            mode="expand",
+            borderaxespad=0.0,
+            **kwargs,
+        )
+        legend_ax.set_frame_on(False)
+        legend_ax.set_xticks([])
+        legend_ax.set_yticks([])
+        return legend
+
 
 def interpret_width_height_aspect(width=None, height=None, aspect=None):
     """Interprets the width, height, and aspect parameters to form just a width and
@@ -433,6 +466,17 @@ def remove_internal_ticks_labels(grid):
     """Remove internal ticks and labels from a grid of axes."""
     remove_internal_labels(grid)
     remove_internal_ticks(grid)
+
+
+def remove_internal_last_ticks_grid(axes_grid):
+    """Remove the last ticks of the axes in a closely spaced grid."""
+    n_rows, n_cols = axes_grid.shape
+    for row in range(n_rows - 1):
+        ax = axes_grid[row, 0]
+        ax.get_yticklabels()[0].set_visible(False)
+    for col in range(n_cols - 1):
+        ax = axes_grid[-1, col]
+        ax.get_xticklabels()[-1].set_visible(False)
 
 
 def data_to_figure_coords(fig, ax, x, y):
