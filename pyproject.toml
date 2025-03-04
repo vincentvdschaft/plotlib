@@ -4,7 +4,14 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["matplotlib>=3.8.0", "numpy>=2.2.2", "pytest>=8.3.4"]
+dependencies = [
+    "imagelib",
+    "matplotlib>=3.8.0",
+    "numpy>=2.2.2",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3.4"]
 
 [build-system]
 requires = ["setuptools", "wheel"]
@@ -15,3 +22,6 @@ packages = ['plotlib']
 
 [tool.setuptools.package-data]
 "plotlib" = ["styles/*.mplstyle"]
+
+[tool.uv.sources]
+imagelib = { git = "https://github.com/vincentvdschaft/imagelib" }

@@ -4,12 +4,12 @@ import matplotlib.widgets
 import numpy as np
 from matplotlib.patches import (
     ArrowStyle,
-    Circle,
     ConnectionPatch,
     FancyArrowPatch,
     Rectangle,
 )
 from matplotlib.transforms import Bbox
+from imagelib import Extent, Image
 
 from plotlib.constants import *
 
@@ -402,7 +402,9 @@ class MPLFigure:
 
 
 def interpret_width_height_aspect(width=None, height=None, aspect=None):
-    """Interprets the width, height, and aspect parameters to form just a width and height. If aspect is provided, either as a float or and extent, one of the other two parameters can be inferred.
+    """Interprets the width, height, and aspect parameters to form just a width and
+    height. If aspect is provided, either as a float or and extent, one of the other
+    two parameters can be inferred.
 
     Parameters
     ----------
@@ -422,7 +424,10 @@ def interpret_width_height_aspect(width=None, height=None, aspect=None):
     if width is not None and height is not None:
         return width, height
 
-    aspect = extent_to_ratio(aspect)
+    try:
+        aspect = float(aspect)
+    except TypeError:
+        aspect = Extent(aspect).aspect
 
     if width is None:
         assert height is not None, "Either width or height should be specified."
@@ -458,6 +463,7 @@ def remove_internal_labels(grid):
 
 
 def remove_internal_ticks_labels(grid):
+    """Remove internal ticks and labels from a grid of axes."""
     remove_internal_labels(grid)
     remove_internal_ticks(grid)
 
@@ -493,7 +499,8 @@ def add_margin_to_bbox(bbox, margin):
     bbox : Bbox
         The bounding box.
     margin : float or Bbox
-        The margin to add to the bounding box. If a float, the same margin is added to all sides. If a Bbox, the margin is added to each side separately.
+        The margin to add to the bounding box. If a float, the same margin is added to
+        all sides. If a Bbox, the margin is added to each side separately.
 
     Returns
     -------
@@ -542,6 +549,7 @@ def remove_axes(axes):
 
 
 def remove_ticks_labels(axes):
+    """Removes the ticks and labels from the axes."""
     if not isinstance(axes, matplotlib.axes.Axes):
 
         for ax in axes:
@@ -566,80 +574,6 @@ def imshow_custom(ax, im, extent, *args, **kwargs):
     extent : tuple of float
         The extent of the image (x0, x1, y0, y1).
     """
-    extent = correct_imshow_extent(extent, im.shape)
+    im = Image(data=im, extent=extent)
 
-    return ax.imshow(im.T, extent=extent, *args, **kwargs)
-
-
-# ==============================================================================
-# Extent
-# ==============================================================================
-
-
-def extent_to_ratio(extent):
-    """Converts an extent [x0, x1, y, y1] to a ratio dy/dx. If the input is already a single number it is just returned."""
-    if isinstance(extent, (float, int)):
-        return extent
-    assert isinstance(extent, (tuple, list, np.ndarray))
-    extent = list(extent)
-    extent = _sort_extent(extent)
-    width = extent[1] - extent[0]
-    height = extent[3] - extent[2]
-    try:
-        ratio = height / width
-    except ZeroDivisionError as exc:
-        raise ZeroDivisionError("Width of extent cannot be 0!") from exc
-    return ratio
-
-
-def _sort_extent(extent):
-    x0 = min(extent[0], extent[1])
-    x1 = max(extent[0], extent[1])
-    y1 = max(extent[2], extent[3])
-    y0 = min(extent[2], extent[3])
-    return np.array([x0, x1, y0, y1])
-
-
-def extent_yflip(extent):
-    """Flips the y-axis of an extent."""
-    return (extent[0], extent[1], extent[3], extent[2])
-
-
-def extent_xflip(extent):
-    """Flips the x-axis of an extent."""
-    return (extent[1], extent[0], extent[2], extent[3])
-
-
-def extent_size(extent):
-    """Returns the size of an extent."""
-    extent = _sort_extent(extent)
-    return extent[1] - extent[0], extent[3] - extent[2]
-
-
-def correct_imshow_extent(extent, image_shape):
-    """Corrects the extent of an image to match the aspect ratio of the image.
-
-    Parameters
-    ----------
-    extent : tuple of float
-        The extent of the image (x0, x1, y0, y1).
-    image_shape : tuple of int
-        The shape of the image (width, height).
-
-    Returns
-    -------
-    extent : tuple of float
-        The corrected extent of the image.
-    """
-    extent = list(extent)
-    width, height = extent_size(extent)
-    pixel_w = width / (image_shape[0] - 1)
-    pixel_h = height / (image_shape[1] - 1)
-
-    offset = (
-        -pixel_w / 2 if extent[0] < extent[1] else pixel_w / 2,
-        pixel_w / 2 if extent[0] < extent[1] else -pixel_w / 2,
-        -pixel_h / 2 if extent[2] < extent[3] else pixel_h / 2,
-        pixel_h / 2 if extent[2] < extent[3] else -pixel_h / 2,
-    )
-    return [ext + off for ext, off in zip(extent, offset)]
+    return ax.imshow(im.data.T, extent=im.extent_imshow, *args, **kwargs)

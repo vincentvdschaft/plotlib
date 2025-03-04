@@ -1,26 +1,18 @@
 from pathlib import Path
 
+import pytest
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Arrow, Circle, ConnectionPatch, Rectangle
-from matplotlib.transforms import Bbox
 
 from plotlib import *
 
 
-def _get_tempdir():
-    tempdir = Path(__file__).parent / "temp"
-    tempdir.mkdir(exist_ok=True)
-    return tempdir
-
-
-def _create_example_lineplot(title="Example plot"):
+def _create_example_lineplot(title, x_vals, y_vals):
     fig = MPLFigure()
     ax = fig.add_ax(0, 0, 4, 2)
 
-    t = np.linspace(0, 2 * np.pi, 200)
-    for i in range(1, 5):
-        ax.plot(t, np.sin(t * i) + np.cos(t * i * 2.5), label=f"Line {i}")
+    for curve in y_vals:
+        ax.plot(x_vals, curve)
     ax.set_xlabel("Time [s]")
     ax.set_ylabel("Voltage [V]")
     ax.set_title(title)
@@ -29,17 +21,19 @@ def _create_example_lineplot(title="Example plot"):
     return fig
 
 
-def test_example_lineplots():
+def test_example_lineplots(tmpdir, fixture_x_vals, fixture_y_vals):
 
     for style in ALLOWED_STYLES:
         use_style(style)
-        fig = _create_example_lineplot(f"Style: {STYLE_NAMES[style]}")
+        fig = _create_example_lineplot(
+            f"Style: {STYLE_NAMES[style]}", fixture_x_vals, fixture_y_vals
+        )
         fig.savefig(
-            _get_tempdir() / f"style_{STYLE_NAMES[style]}.png",
+            tmpdir / f"style_{STYLE_NAMES[style]}.png",
             bbox_inches="tight",
             dpi=600,
         )
 
 
-if __name__ == "__main__":
-    test_example_lineplots()
+# if __name__ == "__main__":
+# test_example_lineplots(Path("."),
