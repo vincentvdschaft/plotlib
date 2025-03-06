@@ -1,7 +1,7 @@
-import pytest
-from pytest import fixture
 import numpy as np
+import pytest
 from imagelib import Image
+from pytest import fixture
 
 
 @fixture
