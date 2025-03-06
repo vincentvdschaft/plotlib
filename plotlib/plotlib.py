@@ -2,14 +2,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.widgets
 import numpy as np
-from matplotlib.patches import (
-    ArrowStyle,
-    ConnectionPatch,
-    FancyArrowPatch,
-    Rectangle,
-)
-from matplotlib.transforms import Bbox
 from imagelib import Extent, Image
+from matplotlib.patches import ArrowStyle, ConnectionPatch, FancyArrowPatch, Rectangle
+from matplotlib.transforms import Bbox
 
 from plotlib.constants import *
 
@@ -370,10 +365,9 @@ class MPLFigure:
     def add_legend(
         self, x, y, width, height, labels=None, handles=None, ax=None, **kwargs
     ):
-
-        assert ax is not None or (
-            labels is not None and handles is not None
-        ), "Either ax or labels and handles should be provided."
+        assert ax is not None or (labels is not None and handles is not None), (
+            "Either ax or labels and handles should be provided."
+        )
         if ax is not None:
             labels = [line.get_label() for line in ax.get_lines()]
             handles = [line for line in ax.get_lines()]
@@ -462,6 +456,15 @@ def remove_internal_labels(grid):
                 ax.set_ylabel("")
 
 
+def remove_internal_titles(grid):
+    """Remove internal titles from a grid of axes."""
+    n_rows, n_cols = grid.shape
+    for row in range(1, n_rows):
+        for col in range(n_cols):
+            ax = grid[row, col]
+            ax.set_title("")
+
+
 def remove_internal_ticks_labels(grid):
     """Remove internal ticks and labels from a grid of axes."""
     remove_internal_labels(grid)
@@ -520,7 +523,7 @@ def add_margin_to_bbox(bbox, margin):
 
 def mmplot(ax, decimals=0):
     """Configures a plot to have millimeter units on the axes."""
-    formatter = plt.FuncFormatter(lambda x, _: f"{x*1e3:.{decimals}f}")
+    formatter = plt.FuncFormatter(lambda x, _: f"{x * 1e3:.{decimals}f}")
     ax.xaxis.set_major_formatter(formatter)
     ax.yaxis.set_major_formatter(formatter)
     ax.set_xlabel("x [mm]")
@@ -529,7 +532,7 @@ def mmplot(ax, decimals=0):
 
 def mm_formatter_ax(ax, x=True, y=True, decimals=0):
     """Configures an axis to have millimeter units on the axes."""
-    formatter = plt.FuncFormatter(lambda x, _: f"{x*1e3:.{decimals}f}")
+    formatter = plt.FuncFormatter(lambda x, _: f"{x * 1e3:.{decimals}f}")
     if x:
         ax.xaxis.set_major_formatter(formatter)
     if y:
@@ -551,7 +554,6 @@ def remove_axes(axes):
 def remove_ticks_labels(axes):
     """Removes the ticks and labels from the axes."""
     if not isinstance(axes, matplotlib.axes.Axes):
-
         for ax in axes:
             remove_ticks_labels(ax)
     else:
