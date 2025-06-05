@@ -29,3 +29,26 @@ class Margins:
 
     def __repr__(self):
         return f"Margins(left={self.left}, right={self.right}, top={self.top}, bottom={self.bottom})"
+
+    @property
+    def width(self) -> float:
+        """Calculate the total width of the margins."""
+        return self.left + self.right
+
+    @property
+    def height(self) -> float:
+        """Calculate the total height of the margins."""
+        return self.top + self.bottom
+
+    def to_tuple(self) -> tuple:
+        """Return the margins as a tuple."""
+        return (self.left, self.right, self.top, self.bottom)
+
+    def to_dict(self) -> dict:
+        """Return the margins as a dictionary."""
+        return {
+            "left": self.left,
+            "right": self.right,
+            "top": self.top,
+            "bottom": self.bottom,
+        }
