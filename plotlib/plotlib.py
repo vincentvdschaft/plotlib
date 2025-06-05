@@ -24,6 +24,16 @@ class MPLFigure:
         self.buttons = []
         self.widget_axes = []
 
+    @property
+    def width(self):
+        """Returns the width of the figure in inches."""
+        return self.figsize[0]
+
+    @property
+    def height(self):
+        """Returns the height of the figure in inches."""
+        return self.figsize[1]
+
     def add_ax(self, x, y, width=None, height=None, aspect=None):
         """Add an axis to the figure with the given bounding box in inches."""
         width, height = interpret_width_height_aspect(
