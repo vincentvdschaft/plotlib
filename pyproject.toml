@@ -22,4 +22,4 @@ packages = ['plotlib']
 "plotlib" = ["styles/*.mplstyle"]
 
 [tool.uv.sources]
-imagelib = { git = "https://github.com/vincentvdschaft/imagelib", rev = "main" }
+imagelib = { git = "https://github.com/vincentvdschaft/imagelib", rev = "b66e536127f2f6fca046ff780c16f11615a82109" }
