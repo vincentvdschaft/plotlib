@@ -192,7 +192,7 @@ class MPLFigure:
 
     def savefig(self, *args, margin=None, **kwargs):
         """Save the figure."""
-        if not "bbox_inches" in kwargs:
+        if "bbox_inches" not in kwargs:
             if margin is not None:
                 kwargs["bbox_inches"] = self.get_total_bbox(margin=margin)
         self.fig.savefig(*args, **kwargs)
