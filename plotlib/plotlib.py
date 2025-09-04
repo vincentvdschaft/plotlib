@@ -6,7 +6,7 @@ from imagelib import Extent, Image
 from matplotlib.patches import ArrowStyle, ConnectionPatch, FancyArrowPatch, Rectangle
 from matplotlib.transforms import Bbox
 
-from plotlib.constants import *
+from plotlib.constants import IEEE_COLUMN_WIDTH
 
 from .boxconnection import get_bbox_connections
 
@@ -139,6 +139,13 @@ class MPLFigure:
     ):
         """Add a grid of axes to the figure. The bottom left corner of the grid is at (x0, y0) in inches."""
 
+        if isinstance(spacing, (float, int)):
+            spacing_horizontal = spacing
+            spacing_vertical = spacing
+        else:
+            spacing_horizontal = spacing[0]
+            spacing_vertical = spacing[1]
+
         width, height = interpret_width_height_aspect(
             width=width, height=height, aspect=aspect
         )
@@ -147,8 +154,8 @@ class MPLFigure:
         for row in range(n_rows):
             for col in range(n_cols):
                 bbox_inches = Bbox.from_bounds(
-                    x + (width + spacing) * col,
-                    y + (height + spacing) * row,
+                    x + (width + spacing_horizontal) * col,
+                    y + (height + spacing_vertical) * row,
                     width,
                     height,
                 )

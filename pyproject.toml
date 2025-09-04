@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "imagelib",
+ "imagelib",
  "matplotlib>=3.8.0",
  "numpy>=1.9.0",
  "pyqt6>=6.9.1",
@@ -27,4 +27,4 @@ packages = ['plotlib']
 "plotlib" = ["styles/*.mplstyle"]
 
 [tool.uv.sources]
-imagelib = { git = "https://github.com/vincentvdschaft/imagelib", rev = "b66e536127f2f6fca046ff780c16f11615a82109" }
+imagelib = { path = "../imagelib", editable = true }
