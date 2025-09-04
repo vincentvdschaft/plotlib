@@ -1,4 +1,8 @@
-from plotlib.dimensions import DimensionsGrid, DimensionsSingle
+from plotlib.dimensions import (
+    DimensionsGrid,
+    DimensionsSingle,
+    DimensionsSingleBesidesGrid,
+)
 from plotlib.plotlib import MPLFigure
 
 
@@ -46,3 +50,59 @@ def quickfig_grid(dimensions: DimensionsGrid) -> MPLFigure:
         spacing=dimensions.grid_spacing,
     )
     return fig, axes
+
+
+def quickfig_single_besides_grid(
+    dimensions: DimensionsSingleBesidesGrid, grid_on_right: bool = True
+) -> MPLFigure:
+    """Create a quick figure with single beside grid dimensions.
+
+    Args:
+        dimensions (DimensionsSingleBesidesGrid): The single beside grid dimensions to use.
+
+    Returns:
+        MPLFigure: The created figure.
+    """
+    assert isinstance(dimensions, DimensionsSingleBesidesGrid)
+
+    fig = MPLFigure(figsize=dimensions.figsize)
+
+    single_y = dimensions.margins.top
+
+    if grid_on_right:
+        single_x = dimensions.margins.left
+    else:
+        single_x = (
+            dimensions.margins.left
+            + dimensions.grid_total_size.width
+            + dimensions.middle_spacing
+        )
+
+    if grid_on_right:
+        grid_x = (
+            dimensions.margins.left
+            + dimensions.single_axis_shape.width
+            + dimensions.middle_spacing
+        )
+    else:
+        grid_x = dimensions.margins.left
+    grid_y = dimensions.margins.top
+
+    ax_single = fig.add_ax(
+        x=single_x,
+        y=single_y,
+        width=dimensions.single_axis_shape.width,
+        height=dimensions.single_axis_shape.height,
+    )
+
+    axes_grid = fig.add_axes_grid(
+        n_rows=dimensions.grid_shape.n_rows,
+        n_cols=dimensions.grid_shape.n_cols,
+        x=grid_x,
+        y=grid_y,
+        width=dimensions.grid_axis_shape.width,
+        height=dimensions.grid_axis_shape.height,
+        spacing=dimensions.grid_spacing,
+    )
+
+    return fig, ax_single, axes_grid
