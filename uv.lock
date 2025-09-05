@@ -172,7 +172,7 @@ wheels = [
 [[package]]
 name = "imagelib"
 version = "0.1.0"
-source = { editable = "../imagelib" }
+source = { directory = "../imagelib" }
 dependencies = [
     { name = "h5py" },
     { name = "matplotlib" },
@@ -496,7 +496,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "imagelib", editable = "../imagelib" },
+    { name = "imagelib", directory = "../imagelib" },
     { name = "matplotlib", specifier = ">=3.8.0" },
     { name = "numpy", specifier = ">=1.9.0" },
     { name = "pyqt6", specifier = ">=6.9.1" },

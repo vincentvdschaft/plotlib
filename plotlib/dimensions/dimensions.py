@@ -208,50 +208,68 @@ class DimensionsGrid:
         # 7  grid_vertical_spacing
         # 8  axis_aspect
 
+        row_fig_width = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0])
+        row_fig_height = np.array([0, 1, 0, 0, 0, 0, 0, 0, 0])
+        row_margins_left = np.array([0, 0, 1, 0, 0, 0, 0, 0, 0])
+        row_margins_right = np.array([0, 0, 0, 1, 0, 0, 0, 0, 0])
+        row_margins_top = np.array([0, 0, 0, 0, 1, 0, 0, 0, 0])
+        row_margins_bottom = np.array([0, 0, 0, 0, 0, 1, 0, 0, 0])
+        row_grid_horizontal_spacing = np.array([0, 0, 0, 0, 0, 0, 1, 0, 0])
+        row_grid_vertical_spacing = np.array([0, 0, 0, 0, 0, 0, 0, 1, 0])
+        row_target = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1])
+
         system_matrix_rows = []
         if fig_width is not None:
-            system_matrix_rows.append([1, 0, 0, 0, 0, 0, 0, 0, fig_width])
+            new_row = row_fig_width + row_target * fig_width
+            system_matrix_rows.append(new_row)
+
         if fig_height is not None:
-            system_matrix_rows.append([0, 1, 0, 0, 0, 0, 0, 0, fig_height])
+            new_row = row_fig_height + row_target * fig_height
+            system_matrix_rows.append(new_row)
+
         if margins_left is not None:
-            system_matrix_rows.append([0, 0, 1, 0, 0, 0, 0, 0, margins_left])
+            new_row = row_margins_left + row_target * margins_left
+            system_matrix_rows.append(new_row)
+
         if margins_right is not None:
-            system_matrix_rows.append([0, 0, 0, 1, 0, 0, 0, 0, margins_right])
+            new_row = row_margins_right + row_target * margins_right
+            system_matrix_rows.append(new_row)
+
         if margins_top is not None:
-            system_matrix_rows.append([0, 0, 0, 0, 1, 0, 0, 0, margins_top])
+            new_row = row_margins_top + row_target * margins_top
+            system_matrix_rows.append(new_row)
+
         if margins_bottom is not None:
-            system_matrix_rows.append([0, 0, 0, 0, 0, 1, 0, 0, margins_bottom])
-        if axis_aspect is not None:
-            system_matrix_rows.append([-axis_aspect, 1, 0, 0, 0, 0, 0, 0, 0])
+            new_row = row_margins_bottom + row_target * margins_bottom
+            system_matrix_rows.append(new_row)
+
         if grid_horizontal_spacing is not None:
-            system_matrix_rows.append(
-                [
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    1,
-                    0,
-                    grid_horizontal_spacing * (grid_shape.n_cols - 1),
-                ]
-            )
+            new_row = row_grid_horizontal_spacing + row_target * grid_horizontal_spacing
+            system_matrix_rows.append(new_row)
+
         if grid_vertical_spacing is not None:
-            system_matrix_rows.append(
-                [
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    1,
-                    grid_vertical_spacing * (grid_shape.n_rows - 1),
-                ]
-            )
+            new_row = row_grid_vertical_spacing + row_target * grid_vertical_spacing
+            system_matrix_rows.append(new_row)
+
+        if axis_aspect is not None:
+            axis_width = (
+                row_fig_width
+                - row_margins_left
+                - row_margins_right
+                - (grid_shape.n_cols - 1) * row_grid_horizontal_spacing
+            ) / grid_shape.n_cols
+            axis_height = (
+                row_fig_height
+                - row_margins_top
+                - row_margins_bottom
+                - (grid_shape.n_rows - 1) * row_grid_vertical_spacing
+            ) / grid_shape.n_rows
+            new_row = -axis_width * axis_aspect + axis_height
+            system_matrix_rows.append(new_row)
+
         if spacings_equal:
-            system_matrix_rows.append([0, 0, 0, 0, 0, 0, 1, -1, 0])
+            new_row = row_grid_horizontal_spacing - row_grid_vertical_spacing
+            system_matrix_rows.append(new_row)
 
         system_matrix_rows = [np.array(row) for row in system_matrix_rows]
         system_matrix = np.vstack(system_matrix_rows)
@@ -265,9 +283,11 @@ class DimensionsGrid:
             print(
                 "No solution found for the given constraints. Providing least squares solution."
             )
-            solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
         else:
-            solution = np.linalg.solve(coeff_matrix, target_vector)
+            print(coeff_matrix.shape)
+
+            solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
+            # solution = np.linalg.solve(coeff_matrix, target_vector)
             if np.any(solution < 0):
                 print("Negative value found in solution for the given constraints.")
         print(solution)

@@ -27,4 +27,4 @@ packages = ['plotlib']
 "plotlib" = ["styles/*.mplstyle"]
 
 [tool.uv.sources]
-imagelib = { path = "../imagelib", editable = true }
+imagelib = { path = "../imagelib" }
