@@ -1,5 +1,3 @@
-from imagelib import Extent
-
 from .animation import *
 from .boxconnection import *
 from .constants import IEEE_COLUMN_WIDTH, IEEE_DOUBLE_COLUMN_WIDTH
@@ -57,7 +55,6 @@ __all__ = [
     "ALLOWED_STYLES",
     "STYLE_NAMES",
     "use_style",
-    "Extent",
     "remove_axes",
     "remove_internal_labels",
     "remove_internal_last_ticks_grid",

@@ -2,7 +2,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.widgets
 import numpy as np
-from imagelib import Extent, Image
 from matplotlib.patches import ArrowStyle, ConnectionPatch, FancyArrowPatch, Rectangle
 from matplotlib.transforms import Bbox
 
@@ -438,7 +437,9 @@ def interpret_width_height_aspect(width=None, height=None, aspect=None):
     try:
         aspect = float(aspect)
     except TypeError:
-        aspect = Extent(aspect).aspect
+        extent_width = max(aspect[0], aspect[1]) - min(aspect[0], aspect[1])
+        extent_height = max(aspect[2], aspect[3]) - min(aspect[2], aspect[3])
+        aspect = extent_height / extent_width
 
     if width is None:
         assert height is not None, "Either width or height should be specified."
@@ -578,21 +579,3 @@ def remove_ticks_labels(axes):
         axes.set_yticks([])
         axes.set_xlabel("")
         axes.set_ylabel("")
-
-
-def imshow_custom(ax, im, extent, *args, **kwargs):
-    """Custom imshow function that sets the extent and aspect ratio of the image and
-    plots the transpose of the image.
-
-    Parameters
-    ----------
-    ax : matplotlib.axes.Axes
-        The axes to plot the image on.
-    im : np.ndarray
-        The image to plot (ij coordinates).
-    extent : tuple of float
-        The extent of the image (x0, x1, y0, y1).
-    """
-    im = Image(data=im, extent=extent)
-
-    return ax.imshow(im.data.T, extent=im.extent_imshow, *args, **kwargs)
