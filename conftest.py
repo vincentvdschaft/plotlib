@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-from imagelib import Image
 from pytest import fixture
 
 
@@ -20,8 +19,3 @@ def fixture_y_vals(fixture_x_vals):
 
     return curves
 
-
-@fixture
-def fixture_image():
-    """Return a test image."""
-    return Image.test_image()
