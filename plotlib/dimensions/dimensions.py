@@ -1,5 +1,6 @@
 import numpy as np
 
+from ..plotlib import MPLFigure
 from .margins import Margins
 from .shape import FloatShape, IntShape
 from .spacing import Spacing
@@ -85,7 +86,6 @@ class DimensionsSingle:
             if np.any(solution < 0):
                 print("Negative value found in solution for the given constraints.")
 
-        print(solution)
         return cls(
             margins=Margins(
                 left=solution[2],
@@ -95,6 +95,16 @@ class DimensionsSingle:
             ),
             figsize=FloatShape(width=solution[0], height=solution[1]),
         )
+
+    def initialize_figure(self):
+        fig = MPLFigure(figsize=self.figsize)
+        ax = fig.add_ax(
+            x=self.margins.left,
+            y=self.margins.top,
+            width=self.figsize[0] - self.margins.left - self.margins.right,
+            height=self.figsize[1] - self.margins.top - self.margins.bottom,
+        )
+        return fig, ax
 
 
 class DimensionsGrid:
@@ -275,7 +285,6 @@ class DimensionsGrid:
         system_matrix = np.vstack(system_matrix_rows)
         target_vector = system_matrix[:, -1]
         coeff_matrix = system_matrix[:, :-1]
-        print(system_matrix)
         # Check if there is a solution
         if np.linalg.matrix_rank(coeff_matrix) < np.linalg.matrix_rank(
             np.column_stack((coeff_matrix, target_vector))
@@ -284,8 +293,6 @@ class DimensionsGrid:
                 "No solution found for the given constraints. Providing least squares solution."
             )
         else:
-            print(coeff_matrix.shape)
-
             solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
             # solution = np.linalg.solve(coeff_matrix, target_vector)
             if np.any(solution < 0):
