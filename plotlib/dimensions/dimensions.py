@@ -53,6 +53,9 @@ class DimensionsSingle:
         axis_aspect=None,
     ):
         system_matrix_rows = []
+        row_ax_width = np.array([1, 0, -1, -1, 0, 0, 0])
+        row_ax_height = np.array([0, 1, 0, 0, -1, -1, 0])
+
         if fig_width is not None:
             system_matrix_rows.append([1, 0, 0, 0, 0, 0, fig_width])
         if fig_height is not None:
@@ -66,25 +69,25 @@ class DimensionsSingle:
         if margins_bottom is not None:
             system_matrix_rows.append([0, 0, 0, 0, 0, 1, margins_bottom])
         if axis_aspect is not None:
-            system_matrix_rows.append([-axis_aspect, 1, 0, 0, 0, 0, 0])
+            system_matrix_rows.append(row_ax_width * -axis_aspect + row_ax_height)
 
         system_matrix_rows = [np.array(row) for row in system_matrix_rows]
         system_matrix = np.vstack(system_matrix_rows)
         target_vector = system_matrix[:, -1]
         coeff_matrix = system_matrix[:, :-1]
 
-        # Check if there is a solution
-        if np.linalg.matrix_rank(coeff_matrix) < np.linalg.matrix_rank(
-            np.column_stack((coeff_matrix, target_vector))
-        ):
+        rank = np.linalg.matrix_rank(coeff_matrix)
+        if rank < coeff_matrix.shape[1]:
+            print("Underdetermined system: Consider providing more constraints.")
+        elif rank > coeff_matrix.shape[1]:
             print(
-                "No solution found for the given constraints. Providing least squares solution."
+                "Overdetermined system: No exact solution found for the given "
+                "constraints. Providing least squares solution."
             )
-            solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
-        else:
-            solution = np.linalg.solve(coeff_matrix, target_vector)
-            if np.any(solution < 0):
-                print("Negative value found in solution for the given constraints.")
+
+        solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
+        if np.any(solution < 0):
+            print("Negative value found in solution for the given constraints.")
 
         return cls(
             margins=Margins(
@@ -105,6 +108,9 @@ class DimensionsSingle:
             height=self.figsize[1] - self.margins.top - self.margins.bottom,
         )
         return fig, ax
+
+    def __repr__(self):
+        return f"DimensionsSingle(margins={self.margins}, figsize={self.figsize})"
 
 
 class DimensionsGrid:
@@ -262,6 +268,7 @@ class DimensionsGrid:
             system_matrix_rows.append(new_row)
 
         if axis_aspect is not None:
+            print((grid_shape.n_cols - 1) * row_grid_horizontal_spacing)
             axis_width = (
                 row_fig_width
                 - row_margins_left
@@ -285,19 +292,19 @@ class DimensionsGrid:
         system_matrix = np.vstack(system_matrix_rows)
         target_vector = system_matrix[:, -1]
         coeff_matrix = system_matrix[:, :-1]
-        # Check if there is a solution
-        if np.linalg.matrix_rank(coeff_matrix) < np.linalg.matrix_rank(
-            np.column_stack((coeff_matrix, target_vector))
-        ):
+
+        rank = np.linalg.matrix_rank(coeff_matrix)
+        if rank < coeff_matrix.shape[1]:
+            print("Underdetermined system: Consider providing more constraints.")
+        elif rank > coeff_matrix.shape[1]:
             print(
-                "No solution found for the given constraints. Providing least squares solution."
+                "Overdetermined system: No exact solution found for the given "
+                "constraints. Providing least squares solution."
             )
-        else:
-            solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
-            # solution = np.linalg.solve(coeff_matrix, target_vector)
-            if np.any(solution < 0):
-                print("Negative value found in solution for the given constraints.")
-        print(solution)
+
+        solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
+        if np.any(solution < 0):
+            print("Negative value found in solution for the given constraints.")
         return cls(
             margins=Margins(
                 left=solution[2],
@@ -308,6 +315,37 @@ class DimensionsGrid:
             figsize=FloatShape(width=solution[0], height=solution[1]),
             grid_shape=grid_shape,
             grid_spacing=Spacing(horizontal=solution[6], vertical=solution[7]),
+        )
+
+    def initialize_figure(self):
+        fig = MPLFigure(figsize=self.figsize)
+        axes = fig.add_axes_grid(
+            n_rows=self.grid_shape.n_rows,
+            n_cols=self.grid_shape.n_cols,
+            x=self.margins.left,
+            y=self.margins.top,
+            width=(
+                self.figsize[0]
+                - self.margins.left
+                - self.margins.right
+                - self.grid_spacing.horizontal * (self.grid_shape.n_cols - 1)
+            )
+            / self.grid_shape.n_cols,
+            height=(
+                self.figsize[1]
+                - self.margins.top
+                - self.margins.bottom
+                - self.grid_spacing.vertical * (self.grid_shape.n_rows - 1)
+            )
+            / self.grid_shape.n_rows,
+            spacing=self.grid_spacing,
+        )
+        return fig, axes
+
+    def __repr__(self):
+        return (
+            f"DimensionsGrid(margins={self.margins}, figsize={self.figsize}, "
+            f"grid_shape={self.grid_shape}, grid_spacing={self.grid_spacing})"
         )
 
 
@@ -639,3 +677,44 @@ class DimensionsSingleBesidesGrid:
             middle_spacing=solution[12],
             single_axis_shape=FloatShape(width=solution[6], height=solution[7]),
         )
+
+    def initialize_figure(self):
+        fig = MPLFigure(figsize=self.figsize)
+        grid_total_width = (
+            self.figsize.width
+            - self.margins.width
+            - self.single_axis_shape.width
+            - self.middle_spacing
+        )
+        grid_total_height = self.figsize.height - self.margins.height
+
+        axes_grid = fig.add_axes_grid(
+            n_rows=self.grid_shape.n_rows,
+            n_cols=self.grid_shape.n_cols,
+            x=self.margins.left,
+            y=self.margins.top,
+            width=(
+                grid_total_width
+                - (self.grid_spacing.horizontal * (self.grid_shape.n_cols - 1))
+            )
+            / self.grid_shape.n_cols,
+            height=(
+                grid_total_height
+                - (self.grid_spacing.vertical * (self.grid_shape.n_rows - 1))
+            )
+            / self.grid_shape.n_rows,
+            spacing=self.grid_spacing,
+        )
+
+        ax_single = fig.add_ax(
+            x=self.margins.left + grid_total_width + self.middle_spacing,
+            y=self.margins.top,
+            width=self.single_axis_shape.width,
+            height=self.single_axis_shape.height,
+        )
+
+        return fig, axes_grid, ax_single
+
+
+def _any_is_none(iterable):
+    return any(x is None for x in iterable)
