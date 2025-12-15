@@ -1,4 +1,4 @@
-from plotlib.dimensions import (
+from plotlib import (
     DimensionsGrid,
     DimensionsSingle,
     DimensionsSingleBesidesGrid,

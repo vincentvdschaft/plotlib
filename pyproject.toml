@@ -20,7 +20,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ['plotlib', 'plotlib.dimensions']
+packages = ['plotlib']
 
 [tool.setuptools.package-data]
 "plotlib" = ["styles/*.mplstyle"]

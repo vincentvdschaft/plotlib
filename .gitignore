@@ -3,3 +3,6 @@
 build/
 
 tmp_*
+
+**/__pycache__
+.venv/
