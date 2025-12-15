@@ -452,6 +452,7 @@ def interpret_width_height_aspect(width=None, height=None, aspect=None):
 
 def remove_internal_ticks(grid):
     """Remove internal ticks from a grid of axes."""
+    grid = np.atleast_2d(grid)
     n_rows, n_cols = grid.shape
     for row in range(n_rows):
         for col in range(n_cols):
@@ -464,6 +465,7 @@ def remove_internal_ticks(grid):
 
 def remove_internal_labels(grid):
     """Remove internal labels from a grid of axes."""
+    grid = np.atleast_2d(grid)
     n_rows, n_cols = grid.shape
     for row in range(n_rows):
         for col in range(n_cols):
@@ -476,6 +478,7 @@ def remove_internal_labels(grid):
 
 def remove_internal_titles(grid):
     """Remove internal titles from a grid of axes."""
+    grid = np.atleast_2d(grid)
     n_rows, n_cols = grid.shape
     for row in range(1, n_rows):
         for col in range(n_cols):
@@ -491,6 +494,7 @@ def remove_internal_ticks_labels(grid):
 
 def remove_internal_last_ticks_grid(axes_grid):
     """Remove the last ticks of the axes in a closely spaced grid."""
+    axes_grid = np.atleast_2d(axes_grid)
     n_rows, n_cols = axes_grid.shape
     for row in range(n_rows - 1):
         ax = axes_grid[row, 0]
