@@ -554,6 +554,12 @@ def mmplot(ax, decimals=0):
 
 def mm_formatter_ax(ax, x=True, y=True, decimals=0):
     """Configures an axis to have millimeter units on the axes."""
+    for ax in _flat_iterate(ax):
+        _mm_formatter_ax(ax, x=x, y=y, decimals=decimals)
+
+
+def _mm_formatter_ax(ax, x=True, y=True, decimals=0):
+    """Configures an axis to have millimeter units on the axes."""
     formatter = plt.FuncFormatter(lambda x, _: f"{x * 1e3:.{decimals}f}")
     if x:
         ax.xaxis.set_major_formatter(formatter)
@@ -575,11 +581,17 @@ def remove_axes(axes):
 
 def remove_ticks_labels(axes):
     """Removes the ticks and labels from the axes."""
+    for ax in _flat_iterate(axes):
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+
+
+def _flat_iterate(axes):
+    """Iterate over axes in a possibly nested structure."""
     if not isinstance(axes, matplotlib.axes.Axes):
         for ax in axes:
-            remove_ticks_labels(ax)
+            yield from _flat_iterate(ax)
     else:
-        axes.set_xticks([])
-        axes.set_yticks([])
-        axes.set_xlabel("")
-        axes.set_ylabel("")
+        yield axes

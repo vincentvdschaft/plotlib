@@ -23,7 +23,3 @@ def map_range(t, start, end, init_start=0, init_end=1):
 
 def smooth_range(t, start, end):
     return map_range(smooth(t), start, end)
-
-
-def smooth_range(t, start, end):
-    return map_range(smooth(t), start, end)
