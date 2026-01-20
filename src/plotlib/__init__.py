@@ -12,6 +12,8 @@ from .dimensions import (
 )
 from .plotlib import (
     MPLFigure,
+    flip_xlims,
+    flip_ylims,
     interpret_width_height_aspect,
     mm_formatter_ax,
     mmplot,
@@ -21,6 +23,7 @@ from .plotlib import (
     remove_internal_ticks,
     remove_internal_ticks_labels,
     remove_internal_titles,
+    remove_ticks,
     remove_ticks_labels,
 )
 from .quicksfigs import quickfig_grid, quickfig_single, quickfig_single_besides_grid
@@ -65,4 +68,7 @@ __all__ = [
     "interpret_width_height_aspect",
     "mm_formatter_ax",
     "mmplot",
+    "flip_xlims",
+    "flip_ylims",
+    "remove_ticks",
 ]

@@ -570,20 +570,23 @@ def _mm_formatter_ax(ax, x=True, y=True, decimals=0):
 def remove_axes(axes):
     """Removes the axes from the figure."""
 
-    if not isinstance(axes, matplotlib.axes.Axes):
-        for ax in axes:
-            remove_axes(ax)
-    else:
+    for ax in _flat_iterate(axes):
         axes.axis("off")
         axes.set_xticks([])
         axes.set_yticks([])
 
 
-def remove_ticks_labels(axes):
-    """Removes the ticks and labels from the axes."""
+def remove_ticks(axes):
+    """Removes the ticks from the axes."""
     for ax in _flat_iterate(axes):
         ax.set_xticks([])
         ax.set_yticks([])
+
+
+def remove_ticks_labels(axes):
+    """Removes the ticks and labels from the axes."""
+    remove_ticks(axes)
+    for ax in _flat_iterate(axes):
         ax.set_xlabel("")
         ax.set_ylabel("")
 
@@ -595,3 +598,15 @@ def _flat_iterate(axes):
             yield from _flat_iterate(ax)
     else:
         yield axes
+
+
+def flip_ylims(ax):
+    """Flip the y-limits of the given axis."""
+    ylim = ax.get_ylim()
+    ax.set_ylim(ylim[1], ylim[0])
+
+
+def flip_xlims(ax):
+    """Flip the x-limits of the given axis."""
+    xlim = ax.get_xlim()
+    ax.set_xlim(xlim[1], xlim[0])
