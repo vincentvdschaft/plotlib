@@ -411,6 +411,72 @@ class MPLFigure:
         return legend
 
 
+def add_ruler(
+    ax, length, position=(0.1, 0.1), orientation="horizontal", label=None, **kwargs
+):
+    """Adds a ruler to the given axis.
+
+    Parameters
+    ----------
+    ax : Axes
+        The axis to add the ruler to.
+    length : float
+        The length of the ruler in axis coordinates (0 to 1).
+    position : tuple of float
+        The position of the ruler in axis coordinates (0 to 1).
+    orientation : str
+        The orientation of the ruler ('horizontal' or 'vertical').
+    kwargs : dict
+        Additional keyword arguments to pass to the plot function.
+    """
+    is_horizontal = orientation.lower() in ("horizontal", "h", "hor")
+    if not is_horizontal:
+        assert orientation.lower() in (
+            "vertical",
+            "v",
+            "ver",
+            "vert",
+        ), "Orientation must be 'horizontal' or 'vertical'."
+
+    if is_horizontal:
+        x0 = position[0]
+        y0 = position[1]
+        x1 = position[0] + length
+        y1 = position[1]
+    else:
+        x0 = position[0]
+        y0 = position[1]
+        x1 = position[0]
+        y1 = position[1] + length
+
+    ax.plot(
+        [x0, x1],
+        [y0, y1],
+        transform=ax.transAxes,
+        **kwargs,
+    )
+    if label is not None:
+        if is_horizontal:
+            ax.text(
+                (x0 + x1) / 2,
+                y0 - 0.05,
+                label,
+                ha="center",
+                va="top",
+                transform=ax.transAxes,
+            )
+        else:
+            ax.text(
+                x0 - 0.05,
+                (y0 + y1) / 2,
+                label,
+                ha="right",
+                va="center",
+                rotation=90,
+                transform=ax.transAxes,
+            )
+
+
 def interpret_width_height_aspect(width=None, height=None, aspect=None):
     """Interprets the width, height, and aspect parameters to form just a width and
     height. If aspect is provided, either as a float or and extent, one of the other
