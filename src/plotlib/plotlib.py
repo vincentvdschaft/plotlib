@@ -1,3 +1,5 @@
+from collections.abc import Generator, Iterable, Sequence
+
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.widgets
@@ -13,27 +15,34 @@ from .boxconnection import get_bbox_connections
 class MPLFigure:
     """Figure class. Wraps a matplotlib figure object."""
 
-    def __init__(self, figsize=(IEEE_COLUMN_WIDTH, 3.0)):
-        self.fig = plt.figure(figsize=figsize)
-        self.figsize = self.fig.get_size_inches()
-        self.axes = []
-        self.grids = []
-        self.cbar_axes = []
-        self.colorbars = []
-        self.buttons = []
-        self.widget_axes = []
+    def __init__(self, figsize: tuple[float, float] = (IEEE_COLUMN_WIDTH, 3.0)) -> None:
+        self.fig: matplotlib.figure.Figure = plt.figure(figsize=figsize)
+        self.figsize: np.ndarray = self.fig.get_size_inches()
+        self.axes: list[matplotlib.axes.Axes] = []
+        self.grids: list[np.ndarray] = []
+        self.cbar_axes: list[matplotlib.axes.Axes] = []
+        self.colorbars: list[matplotlib.colorbar.Colorbar] = []
+        self.buttons: list[matplotlib.widgets.Button] = []
+        self.widget_axes: list[matplotlib.axes.Axes] = []
 
     @property
-    def width(self):
+    def width(self) -> float:
         """Returns the width of the figure in inches."""
         return self.figsize[0]
 
     @property
-    def height(self):
+    def height(self) -> float:
         """Returns the height of the figure in inches."""
         return self.figsize[1]
 
-    def add_ax(self, x, y, width=None, height=None, aspect=None):
+    def add_ax(
+        self,
+        x: float,
+        y: float,
+        width: float | None = None,
+        height: float | None = None,
+        aspect: float | Sequence[float] | None = None,
+    ) -> matplotlib.axes.Axes:
         """Add an axis to the figure with the given bounding box in inches."""
         width, height = interpret_width_height_aspect(
             width=width, height=height, aspect=aspect
@@ -41,7 +50,7 @@ class MPLFigure:
         bbox_inches = Bbox.from_bounds(x, y, width, height)
         return self._add_ax(bbox_inches)
 
-    def _add_ax(self, bbox_inches):
+    def _add_ax(self, bbox_inches: Bbox) -> matplotlib.axes.Axes:
         """Add an axis to the figure with the given bounding box in inches."""
         bbox = self.bbox_norm(bbox_inches)
         ax = self.fig.add_axes(bbox)
@@ -49,7 +58,16 @@ class MPLFigure:
 
         return ax
 
-    def add_button(self, label, x, y, width=None, height=None, aspect=None, **kwargs):
+    def add_button(
+        self,
+        label: str,
+        x: float,
+        y: float,
+        width: float | None = None,
+        height: float | None = None,
+        aspect: float | Sequence[float] | None = None,
+        **kwargs,
+    ) -> matplotlib.widgets.Button:
         """Add a button to the figure."""
         width, height = interpret_width_height_aspect(
             width=width, height=height, aspect=aspect
@@ -58,7 +76,9 @@ class MPLFigure:
         button = self._add_button(label, bbox_inches, **kwargs)
         return button
 
-    def _add_button(self, label, bbox_inches, **kwargs):
+    def _add_button(
+        self, label: str, bbox_inches: Bbox, **kwargs
+    ) -> matplotlib.widgets.Button:
         """Add a button to the figure."""
         bbox = self.bbox_norm(bbox_inches)
         ax = self.fig.add_axes(bbox)
@@ -67,7 +87,15 @@ class MPLFigure:
         self.widget_axes.append(ax)
         return button
 
-    def add_textbox(self, x, y, width=None, height=None, aspect=None, **kwargs):
+    def add_textbox(
+        self,
+        x: float,
+        y: float,
+        width: float | None = None,
+        height: float | None = None,
+        aspect: float | Sequence[float] | None = None,
+        **kwargs,
+    ) -> matplotlib.widgets.TextBox:
         """Add a textbox to the figure."""
         width, height = interpret_width_height_aspect(
             width=width, height=height, aspect=aspect
@@ -76,7 +104,7 @@ class MPLFigure:
         textbox = self._add_textbox(bbox_inches, **kwargs)
         return textbox
 
-    def _add_textbox(self, bbox_inches, **kwargs):
+    def _add_textbox(self, bbox_inches: Bbox, **kwargs) -> matplotlib.widgets.TextBox:
         """Add a textbox to the figure."""
         bbox = self.bbox_norm(bbox_inches)
         ax = self.fig.add_axes(bbox)
@@ -84,7 +112,7 @@ class MPLFigure:
         self.widget_axes.append(ax)
         return textbox
 
-    def bbox_norm(self, bbox_inches):
+    def bbox_norm(self, bbox_inches: Bbox) -> Bbox:
         """Normalizes a bounding box in inches to a bounding box in normalized figure coordinates."""
         x0 = bbox_inches.x0 / self.figsize[0]
         y0 = 1.0 - bbox_inches.y1 / self.figsize[1]
@@ -93,7 +121,7 @@ class MPLFigure:
 
         return Bbox(((x0, y0), (x1, y1)))
 
-    def bbox_norm_inv(self, bbox_norm):
+    def bbox_norm_inv(self, bbox_norm: Bbox) -> Bbox:
         """Inverse of bbox_norm."""
         x0 = bbox_norm.x0 * self.figsize[0]
         y0 = (1.0 - bbox_norm.y1) * self.figsize[1]
@@ -101,41 +129,41 @@ class MPLFigure:
         y1 = (1.0 - bbox_norm.y0) * self.figsize[1]
         return Bbox(((x0, y0), (x1, y1)))
 
-    def coord_norm(self, x, y):
+    def coord_norm(self, x: float, y: float) -> tuple[float, float]:
         """Converts a coordinate in inches to a coordinate in normalized figure coordinates."""
         x_norm = x / self.figsize[0]
         y_norm = 1.0 - y / self.figsize[1]
         return x_norm, y_norm
 
-    def coord_norm_inv(self, x_norm, y_norm):
+    def coord_norm_inv(self, x_norm: float, y_norm: float) -> tuple[float, float]:
         """Inverse of coord_norm."""
         x = x_norm * self.figsize[0]
         y = (1.0 - y_norm) * self.figsize[1]
         return x, y
 
-    def width_norm(self, width):
+    def width_norm(self, width: float) -> float:
         """Converts a width in inches to a width in normalized figure coordinates."""
         return width / self.figsize[0]
 
-    def height_norm(self, height):
+    def height_norm(self, height: float) -> float:
         """Converts a height in inches to a height in normalized figure coordinates."""
         return height / self.figsize[1]
 
-    def get_ax_bbox(self, ax):
+    def get_ax_bbox(self, ax: matplotlib.axes.Axes) -> Bbox:
         bbox = ax.get_position()
         return self.bbox_norm_inv(bbox)
 
     def add_axes_grid(
         self,
-        n_rows,
-        n_cols,
-        x,
-        y,
-        spacing,
-        width=None,
-        height=None,
-        aspect=None,
-    ):
+        n_rows: int,
+        n_cols: int,
+        x: float,
+        y: float,
+        spacing: float | Sequence[float],
+        width: float | None = None,
+        height: float | None = None,
+        aspect: float | Sequence[float] | None = None,
+    ) -> np.ndarray:
         """Add a grid of axes to the figure. The bottom left corner of the grid is at (x0, y0) in inches."""
 
         if isinstance(spacing, (float, int)):
@@ -165,7 +193,7 @@ class MPLFigure:
 
         return axes_array
 
-    def get_total_bbox(self, margin=0.2):
+    def get_total_bbox(self, margin: float = 0.2) -> Bbox:
         """Get the total bounding box of the figure in inches."""
         bbox0 = self.axes[0].get_position()
         x0 = bbox0.x0
@@ -190,20 +218,20 @@ class MPLFigure:
         bbox = Bbox(((bbox.x0, 1.0 - bbox.y1), (bbox.x1, 1.0 - bbox.y0)))
         return self.bbox_norm_inv(bbox)
 
-    def add_text(self, x, y, text, **kwargs):
+    def add_text(self, x: float, y: float, text: str, **kwargs) -> matplotlib.text.Text:
         """Add text to the figure."""
         x_norm = x / self.figsize[0]
         y_norm = 1.0 - y / self.figsize[1]
         return self.fig.text(x_norm, y_norm, text, **kwargs)
 
-    def savefig(self, *args, margin=None, **kwargs):
+    def savefig(self, *args, margin: float | None = None, **kwargs) -> None:
         """Save the figure."""
         if "bbox_inches" not in kwargs:
             if margin is not None:
                 kwargs["bbox_inches"] = self.get_total_bbox(margin=margin)
         self.fig.savefig(*args, **kwargs)
 
-    def get_ax_width(self, ax):
+    def get_ax_width(self, ax: matplotlib.axes.Axes) -> float:
         """Returns the width of the Axes in inches.
 
         Returns
@@ -216,7 +244,7 @@ class MPLFigure:
         width *= self.figsize[0]
         return width
 
-    def get_ax_height(self, ax):
+    def get_ax_height(self, ax: matplotlib.axes.Axes) -> float:
         """Returns the height of the Axes in inches.
 
         Returns
@@ -229,7 +257,7 @@ class MPLFigure:
         height *= self.figsize[1]
         return height
 
-    def get_ax_position(self, ax):
+    def get_ax_position(self, ax: matplotlib.axes.Axes) -> tuple[float, float]:
         """Returns the position of the Axes in figure coordinates.
 
         Returns
@@ -241,19 +269,21 @@ class MPLFigure:
         bbox = self.bbox_norm_inv(bbox)
         return bbox.x0, bbox.y0
 
-    def data_to_figure_coords(self, ax, x, y):
+    def data_to_figure_coords(
+        self, ax: matplotlib.axes.Axes, x: float, y: float
+    ) -> tuple[float, float]:
         """"""
         return data_to_figure_coords(fig=self.fig, ax=ax, x=x, y=y)
 
     def add_inset_plot(
         self,
-        ax,
-        width=None,
-        height=None,
-        aspect=None,
-        position="top left",
-        margin=0.2,
-    ):
+        ax: matplotlib.axes.Axes,
+        width: float | None = None,
+        height: float | None = None,
+        aspect: float | Sequence[float] | None = None,
+        position: str = "top left",
+        margin: float = 0.2,
+    ) -> matplotlib.axes.Axes:
         """"""
         parent_x, parent_y = self.get_ax_position(ax)
         parent_width = self.get_ax_width(ax)
@@ -282,8 +312,15 @@ class MPLFigure:
         return ax
 
     def add_arrow(
-        self, ax, data_x, data_y, angle_deg, length_inches=1, color="C0", **kwargs
-    ):
+        self,
+        ax: matplotlib.axes.Axes,
+        data_x: float,
+        data_y: float,
+        angle_deg: float,
+        length_inches: float = 1,
+        color: str = "C0",
+        **kwargs,
+    ) -> FancyArrowPatch:
         """Add an arrow to the figure."""
         fig_x, fig_y = self.data_to_figure_coords(ax, data_x, data_y)
         dx = length_inches * np.cos(angle_deg * np.pi / 180)
@@ -310,8 +347,15 @@ class MPLFigure:
         )
 
     def add_rectangle_ax(
-        self, ax, data_x, data_y, data_width, data_height, *args, **kwargs
-    ):
+        self,
+        ax: matplotlib.axes.Axes,
+        data_x: float,
+        data_y: float,
+        data_width: float,
+        data_height: float,
+        *args,
+        **kwargs,
+    ) -> Rectangle:
         """Add a rectangle to the figure in the data coordinates of the Axes."""
         fig_x0, fig_y0 = self.data_to_figure_coords(ax, data_x, data_y)
         fig_x1, fig_y1 = self.data_to_figure_coords(
@@ -330,7 +374,7 @@ class MPLFigure:
             )
         )
 
-    def draw_bbox_connection(self, bbox0, bbox1, *args, **kwargs):
+    def draw_bbox_connection(self, bbox0: Bbox, bbox1: Bbox, *args, **kwargs) -> None:
         bbox0 = self.bbox_norm(bbox0)
         bbox1 = self.bbox_norm(bbox1)
         lines, hull = get_bbox_connections(bbox0, bbox1)
@@ -344,17 +388,17 @@ class MPLFigure:
 
     def add_colorbar(
         self,
-        x,
-        y,
-        width,
-        height,
-        cmap,
-        vmin,
-        vmax,
-        ticks,
-        orientation="vertical",
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        cmap: str | matplotlib.colors.Colormap,
+        vmin: float,
+        vmax: float,
+        ticks: list[float],
+        orientation: str = "vertical",
         **kwargs,
-    ):
+    ) -> matplotlib.colorbar.Colorbar:
         """Adds a colorbar to the figure."""
         ax_cbar = self.add_ax(
             x=x,
@@ -379,8 +423,16 @@ class MPLFigure:
     #     plt.close(self.fig)
 
     def add_legend(
-        self, x, y, width, height, labels=None, handles=None, ax=None, **kwargs
-    ):
+        self,
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        labels: list[str] | None = None,
+        handles: list[matplotlib.artist.Artist] | None = None,
+        ax: matplotlib.axes.Axes | None = None,
+        **kwargs,
+    ) -> matplotlib.legend.Legend:
         assert ax is not None or (labels is not None and handles is not None), (
             "Either ax or labels and handles should be provided."
         )
@@ -412,8 +464,13 @@ class MPLFigure:
 
 
 def add_ruler(
-    ax, length, position=(0.1, 0.1), orientation="horizontal", label=None, **kwargs
-):
+    ax: matplotlib.axes.Axes,
+    length: float,
+    position: tuple[float, float] = (0.1, 0.1),
+    orientation: str = "horizontal",
+    label: str | None = None,
+    **kwargs,
+) -> None:
     """Adds a ruler to the given axis.
 
     Parameters
@@ -477,7 +534,11 @@ def add_ruler(
             )
 
 
-def interpret_width_height_aspect(width=None, height=None, aspect=None):
+def interpret_width_height_aspect(
+    width: float | None = None,
+    height: float | None = None,
+    aspect: float | Sequence[float] | None = None,
+) -> tuple[float, float]:
     """Interprets the width, height, and aspect parameters to form just a width and
     height. If aspect is provided, either as a float or and extent, one of the other
     two parameters can be inferred.
@@ -516,7 +577,7 @@ def interpret_width_height_aspect(width=None, height=None, aspect=None):
     return float(width), float(height)
 
 
-def remove_internal_ticks(grid):
+def remove_internal_ticks(grid: np.ndarray) -> None:
     """Remove internal ticks from a grid of axes."""
     grid = np.atleast_2d(grid)
     n_rows, n_cols = grid.shape
@@ -529,7 +590,7 @@ def remove_internal_ticks(grid):
                 ax.set_yticks([])
 
 
-def remove_internal_labels(grid):
+def remove_internal_labels(grid: np.ndarray) -> None:
     """Remove internal labels from a grid of axes."""
     grid = np.atleast_2d(grid)
     n_rows, n_cols = grid.shape
@@ -542,7 +603,7 @@ def remove_internal_labels(grid):
                 ax.set_ylabel("")
 
 
-def remove_internal_titles(grid):
+def remove_internal_titles(grid: np.ndarray) -> None:
     """Remove internal titles from a grid of axes."""
     grid = np.atleast_2d(grid)
     n_rows, n_cols = grid.shape
@@ -552,13 +613,13 @@ def remove_internal_titles(grid):
             ax.set_title("")
 
 
-def remove_internal_ticks_labels(grid):
+def remove_internal_ticks_labels(grid: np.ndarray) -> None:
     """Remove internal ticks and labels from a grid of axes."""
     remove_internal_labels(grid)
     remove_internal_ticks(grid)
 
 
-def remove_internal_last_ticks_grid(axes_grid):
+def remove_internal_last_ticks_grid(axes_grid: np.ndarray) -> None:
     """Remove the last ticks of the axes in a closely spaced grid."""
     axes_grid = np.atleast_2d(axes_grid)
     n_rows, n_cols = axes_grid.shape
@@ -570,7 +631,12 @@ def remove_internal_last_ticks_grid(axes_grid):
         ax.get_xticklabels()[-1].set_visible(False)
 
 
-def data_to_figure_coords(fig, ax, x, y):
+def data_to_figure_coords(
+    fig: matplotlib.figure.Figure,
+    ax: matplotlib.axes.Axes,
+    x: float,
+    y: float,
+) -> tuple[float, float]:
     coords = x, y
     # Transform (x, y) from data coordinates to display coordinates
     # coords = ax.transAxes.transform(coords)
@@ -582,7 +648,7 @@ def data_to_figure_coords(fig, ax, x, y):
     return fig_x, fig_y
 
 
-def add_margin_to_bbox(bbox, margin):
+def add_margin_to_bbox(bbox: Bbox, margin: float | Sequence[float] | Bbox) -> Bbox:
     """Adds a margin to a bounding box.
 
     Parameters
@@ -609,7 +675,7 @@ def add_margin_to_bbox(bbox, margin):
     return Bbox([[x0, y0], [x1, y1]])
 
 
-def mmplot(ax, decimals=0):
+def mmplot(ax: matplotlib.axes.Axes, decimals: int = 0) -> None:
     """Configures a plot to have millimeter units on the axes."""
     formatter = plt.FuncFormatter(lambda x, _: f"{x * 1e3:.{decimals}f}")
     ax.xaxis.set_major_formatter(formatter)
@@ -618,13 +684,20 @@ def mmplot(ax, decimals=0):
     ax.set_ylabel("y [mm]")
 
 
-def mm_formatter_ax(ax, x=True, y=True, decimals=0):
+def mm_formatter_ax(
+    ax: matplotlib.axes.Axes | Iterable,
+    x: bool = True,
+    y: bool = True,
+    decimals: int = 0,
+) -> None:
     """Configures an axis to have millimeter units on the axes."""
     for ax in _flat_iterate(ax):
         _mm_formatter_ax(ax, x=x, y=y, decimals=decimals)
 
 
-def _mm_formatter_ax(ax, x=True, y=True, decimals=0):
+def _mm_formatter_ax(
+    ax: matplotlib.axes.Axes, x: bool = True, y: bool = True, decimals: int = 0
+) -> None:
     """Configures an axis to have millimeter units on the axes."""
     formatter = plt.FuncFormatter(lambda x, _: f"{x * 1e3:.{decimals}f}")
     if x:
@@ -633,7 +706,7 @@ def _mm_formatter_ax(ax, x=True, y=True, decimals=0):
         ax.yaxis.set_major_formatter(formatter)
 
 
-def remove_axes(axes):
+def remove_axes(axes: matplotlib.axes.Axes | Iterable) -> None:
     """Removes the axes from the figure."""
 
     for ax in _flat_iterate(axes):
@@ -642,14 +715,14 @@ def remove_axes(axes):
         axes.set_yticks([])
 
 
-def remove_ticks(axes):
+def remove_ticks(axes: matplotlib.axes.Axes | Iterable) -> None:
     """Removes the ticks from the axes."""
     for ax in _flat_iterate(axes):
         ax.set_xticks([])
         ax.set_yticks([])
 
 
-def remove_ticks_labels(axes):
+def remove_ticks_labels(axes: matplotlib.axes.Axes | Iterable) -> None:
     """Removes the ticks and labels from the axes."""
     remove_ticks(axes)
     for ax in _flat_iterate(axes):
@@ -657,7 +730,9 @@ def remove_ticks_labels(axes):
         ax.set_ylabel("")
 
 
-def _flat_iterate(axes):
+def _flat_iterate(
+    axes: matplotlib.axes.Axes | Iterable,
+) -> Generator[matplotlib.axes.Axes, None, None]:
     """Iterate over axes in a possibly nested structure."""
     if not isinstance(axes, matplotlib.axes.Axes):
         for ax in axes:
@@ -666,13 +741,13 @@ def _flat_iterate(axes):
         yield axes
 
 
-def flip_ylims(ax):
+def flip_ylims(ax: matplotlib.axes.Axes) -> None:
     """Flip the y-limits of the given axis."""
     ylim = ax.get_ylim()
     ax.set_ylim(ylim[1], ylim[0])
 
 
-def flip_xlims(ax):
+def flip_xlims(ax: matplotlib.axes.Axes) -> None:
     """Flip the x-limits of the given axis."""
     xlim = ax.get_xlim()
     ax.set_xlim(xlim[1], xlim[0])
