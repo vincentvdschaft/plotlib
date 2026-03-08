@@ -1,6 +1,7 @@
 import numpy as np
 
 from ..plotlib import MPLFigure
+from .aspect import extent_to_aspect_if_needed
 from .margins import Margins
 from .shape import FloatShape
 
@@ -51,6 +52,7 @@ class DimensionsSingle:
         margins_bottom=None,
         axis_aspect=None,
     ):
+        axis_aspect = extent_to_aspect_if_needed(axis_aspect)
         system_matrix_rows = []
         row_ax_width = np.array([1, 0, -1, -1, 0, 0, 0])
         row_ax_height = np.array([0, 1, 0, 0, -1, -1, 0])

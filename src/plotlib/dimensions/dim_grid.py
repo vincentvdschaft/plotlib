@@ -1,6 +1,7 @@
 import numpy as np
 
 from ..plotlib import MPLFigure
+from .aspect import extent_to_aspect_if_needed
 from .margins import Margins
 from .shape import FloatShape, IntShape
 from .spacing import Spacing
@@ -54,43 +55,6 @@ class DimensionsGrid:
         return FloatShape(axis_width, axis_height)
 
     @classmethod
-    def from_no_height(
-        cls,
-        margins: Margins,
-        fig_width: float,
-        axis_aspect: float,
-        grid_spacing: Spacing,
-        grid_shape: IntShape,
-    ):
-        assert isinstance(margins, Margins)
-        grid_shape = IntShape(grid_shape[0], grid_shape[1])
-        grid_spacing = Spacing(grid_spacing[0], grid_spacing[1])
-        axis_aspect = float(axis_aspect)
-        fig_width = float(fig_width)
-
-        axis_width = (
-            fig_width
-            - margins.width
-            - grid_spacing.horizontal * (grid_shape.n_cols - 1)
-        ) / grid_shape.n_cols
-
-        axis_height = axis_width * axis_aspect
-
-        fig_height = (
-            axis_height * grid_shape.n_rows
-            + margins.height
-            + grid_spacing.vertical * (grid_shape.n_rows - 1)
-        )
-        figsize = FloatShape(fig_width, fig_height)
-
-        return cls(
-            margins=margins,
-            grid_shape=grid_shape,
-            figsize=figsize,
-            grid_spacing=grid_spacing,
-        )
-
-    @classmethod
     def from_solve(
         cls,
         grid_shape: IntShape,
@@ -105,6 +69,7 @@ class DimensionsGrid:
         axis_aspect=None,
         spacings_equal=True,
     ):
+        axis_aspect = extent_to_aspect_if_needed(axis_aspect)
         grid_shape = IntShape(grid_shape[0], grid_shape[1])
 
         # 0  fig_width

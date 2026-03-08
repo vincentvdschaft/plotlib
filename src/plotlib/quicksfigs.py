@@ -1,3 +1,9 @@
+from typing import Tuple, TypeAlias
+
+import numpy as np
+import numpy.typing as npt
+from matplotlib.axes import Axes
+
 from plotlib import (
     DimensionsGrid,
     DimensionsSingle,
@@ -5,8 +11,10 @@ from plotlib import (
 )
 from plotlib.plotlib import MPLFigure
 
+AxesArray: TypeAlias = npt.NDArray[np.object_]
 
-def quickfig_single(dimensions: DimensionsSingle) -> MPLFigure:
+
+def quickfig_single(dimensions: DimensionsSingle) -> Tuple[MPLFigure, Axes]:
     """Create a quick figure with single dimensions.
 
     Args:
@@ -14,6 +22,7 @@ def quickfig_single(dimensions: DimensionsSingle) -> MPLFigure:
 
     Returns:
         MPLFigure: The created figure.
+        Axes: The created axis.
     """
     assert isinstance(dimensions, DimensionsSingle)
 
@@ -27,7 +36,7 @@ def quickfig_single(dimensions: DimensionsSingle) -> MPLFigure:
     return fig, ax
 
 
-def quickfig_grid(dimensions: DimensionsGrid) -> MPLFigure:
+def quickfig_grid(dimensions: DimensionsGrid) -> Tuple[MPLFigure, AxesArray]:
     """Create a quick figure with grid dimensions.
 
     Args:
@@ -35,6 +44,7 @@ def quickfig_grid(dimensions: DimensionsGrid) -> MPLFigure:
 
     Returns:
         MPLFigure: The created figure.
+        AxesArray: The created axes.
     """
     assert isinstance(dimensions, DimensionsGrid)
 
@@ -54,7 +64,7 @@ def quickfig_grid(dimensions: DimensionsGrid) -> MPLFigure:
 
 def quickfig_single_besides_grid(
     dimensions: DimensionsSingleBesidesGrid, grid_on_right: bool = True
-) -> MPLFigure:
+) -> Tuple[MPLFigure, Axes, AxesArray]:
     """Create a quick figure with single beside grid dimensions.
 
     Args:
@@ -62,6 +72,8 @@ def quickfig_single_besides_grid(
 
     Returns:
         MPLFigure: The created figure.
+        Axes: The created single axis.
+        AxesArray: The created grid axes.
     """
     assert isinstance(dimensions, DimensionsSingleBesidesGrid)
 

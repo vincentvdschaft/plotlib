@@ -1,3 +1,4 @@
+from .aspect import extent_to_aspect, extent_to_aspect_if_needed
 from .dim_besides_grid import DimensionsSingleBesidesGrid
 from .dim_grid import DimensionsGrid
 from .dim_single import DimensionsSingle
@@ -13,4 +14,6 @@ __all__ = [
     "FloatShape",
     "IntShape",
     "Spacing",
+    "extent_to_aspect",
+    "extent_to_aspect_if_needed",
 ]

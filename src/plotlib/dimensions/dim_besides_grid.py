@@ -1,6 +1,7 @@
 import numpy as np
 
 from ..plotlib import MPLFigure
+from .aspect import extent_to_aspect_if_needed
 from .margins import Margins
 from .shape import FloatShape, IntShape
 from .spacing import Spacing
@@ -79,73 +80,6 @@ class DimensionsSingleBesidesGrid:
         return FloatShape(width=grid_width, height=grid_height)
 
     @classmethod
-    def from_no_height(
-        cls,
-        margins: Margins,
-        fig_width: float,
-        single_axis_aspect: float,
-        single_axis_width: float,
-        grid_axis_aspect: float,
-        grid_shape: IntShape,
-        grid_horizontal_spacing: float,
-        middle_spacing: float,
-    ):
-        assert isinstance(margins, Margins)
-        grid_shape = IntShape(grid_shape[0], grid_shape[1])
-        grid_horizontal_spacing = float(grid_horizontal_spacing)
-        single_axis_width = float(single_axis_width)
-        single_axis_aspect = float(single_axis_aspect)
-        fig_width = float(fig_width)
-        grid_axis_aspect = float(grid_axis_aspect)
-        middle_spacing = float(middle_spacing)
-
-        single_axis_shape = FloatShape(
-            single_axis_width, single_axis_width * single_axis_aspect
-        )
-
-        grid_total_width = (
-            fig_width - margins.width - single_axis_width - middle_spacing
-        )
-        grid_total_height = single_axis_shape.height
-
-        fig_height = single_axis_shape.height + margins.height
-
-        # Compute the maximum width for each grid axis based on the figure width
-        grid_axis_width_max = (
-            grid_total_width - (grid_horizontal_spacing * (grid_shape.n_cols - 1))
-        ) / grid_shape.n_cols
-
-        grid_axis_height_max = grid_total_height / grid_shape.n_rows
-
-        grid_axis_width = min(
-            grid_axis_width_max,
-            grid_axis_height_max / grid_axis_aspect,
-        )
-
-        grid_axis_shape = FloatShape(
-            width=grid_axis_width,
-            height=grid_axis_width * grid_axis_aspect,
-        )
-
-        grid_vertical_spacing = (
-            grid_total_height - (grid_axis_shape.height * grid_shape.n_rows)
-        ) / (grid_shape.n_rows - 1)
-
-        grid_spacing = Spacing(
-            horizontal=grid_horizontal_spacing, vertical=grid_vertical_spacing
-        )
-        figsize = FloatShape(fig_width, fig_height)
-
-        return cls(
-            margins=margins,
-            grid_shape=grid_shape,
-            figsize=figsize,
-            single_axis_shape=single_axis_shape,
-            grid_spacing=grid_spacing,
-            middle_spacing=middle_spacing,
-        )
-
-    @classmethod
     def from_solve(
         cls,
         grid_shape: IntShape,
@@ -180,6 +114,8 @@ class DimensionsSingleBesidesGrid:
         # 10 grid_horizontal_spacing
         # 11 grid_vertical_spacing
         # 12 middle_spacing
+        grid_axis_aspect = extent_to_aspect_if_needed(grid_axis_aspect)
+        single_axis_aspect = extent_to_aspect_if_needed(single_axis_aspect)
         grid_shape = IntShape(grid_shape[0], grid_shape[1])
 
         system_matrix_rows = []
