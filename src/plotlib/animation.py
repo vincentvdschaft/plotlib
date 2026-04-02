@@ -23,3 +23,26 @@ def map_range(t, start, end, init_start=0, init_end=1):
 
 def smooth_range(t, start, end):
     return map_range(smooth(t), start, end)
+
+
+def smooth_segment(start: np.ndarray, end: np.ndarray, n_steps: int) -> np.ndarray:
+    t_values = np.linspace(0, 1, n_steps, endpoint=False).reshape(-1, 1)
+    return smooth_range(t_values, start, end)
+
+
+def smooth_position_loop(positions: np.ndarray, n_steps: int) -> np.ndarray:
+    """Smoothly interpolate through positions in a loop, returning to the first point.
+
+    Args:
+        positions: Array of shape (n_points, n_dim).
+        n_steps: Number of interpolation steps per segment.
+
+    Returns:
+        Array of shape (n_points * n_steps, n_dim).
+    """
+    n_points = len(positions)
+    segments = [
+        smooth_segment(positions[i], positions[(i + 1) % n_points], n_steps)
+        for i in range(n_points)
+    ]
+    return np.concatenate(segments, axis=0)
