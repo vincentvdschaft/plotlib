@@ -633,6 +633,37 @@ def remove_internal_last_ticks_grid(axes_grid: np.ndarray) -> None:
         ax.get_xticklabels()[-1].set_visible(False)
 
 
+def box_fit_tick_labels(ax: Axes | Iterable, x: bool = True, y: bool = False) -> None:
+    """Adjust the box of the axis to fit the tick labels."""
+    for ax in _flat_iterate(ax):
+        if x:
+            _box_fit_tick_xlabels(ax)
+        if y:
+            _box_fit_tick_ylabels(ax)
+
+
+def _box_fit_tick_xlabels(ax: Axes) -> None:
+    labels = ax.get_xticklabels()
+    for i, label in enumerate(labels):
+        if i == 0:
+            label.set_ha("left")
+        elif i == len(labels) - 1:
+            label.set_ha("right")
+        else:
+            label.set_ha("center")
+
+
+def _box_fit_tick_ylabels(ax: Axes) -> None:
+    labels = ax.get_yticklabels()
+    for i, label in enumerate(labels):
+        if i == 0:
+            label.set_va("bottom")
+        elif i == len(labels) - 1:
+            label.set_va("top")
+        else:
+            label.set_va("center")
+
+
 def data_to_figure_coords(
     fig: Figure,
     ax: Axes,

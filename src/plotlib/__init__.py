@@ -12,6 +12,7 @@ from .dimensions import (
 )
 from .plotlib import (
     MPLFigure,
+    box_fit_tick_labels,
     flip_xlims,
     flip_ylims,
     interpret_width_height_aspect,
@@ -64,6 +65,7 @@ __all__ = [
     "remove_internal_ticks",
     "remove_internal_ticks_labels",
     "remove_internal_titles",
+    "box_fit_tick_labels",
     "remove_ticks_labels",
     "interpret_width_height_aspect",
     "mm_formatter_ax",

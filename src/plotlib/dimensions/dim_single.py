@@ -7,7 +7,7 @@ from .shape import FloatShape
 
 
 class DimensionsSingle:
-    def __init__(self, margins: Margins, figsize: FloatShape):
+    def __init__(self, margins: Margins, figsize: FloatShape | tuple[float, float]):
         assert isinstance(margins, Margins)
 
         self._margins = margins
@@ -31,14 +31,14 @@ class DimensionsSingle:
     def from_no_height(cls, margins, fig_width, axis_aspect):
         axis_width = fig_width - margins.width
         axis_height = axis_width * axis_aspect
-        figsize = (fig_width, axis_height + margins.height)
+        figsize = FloatShape(fig_width, axis_height + margins.height)
         return cls(margins, figsize)
 
     @classmethod
     def from_no_width(cls, margins, fig_height, axis_aspect):
         axis_height = fig_height - margins.height
         axis_width = axis_height / axis_aspect
-        figsize = (axis_width + margins.width, fig_height)
+        figsize = FloatShape(axis_width + margins.width, fig_height)
         return cls(margins, figsize)
 
     @classmethod
@@ -105,8 +105,8 @@ class DimensionsSingle:
         ax = fig.add_ax(
             x=self.margins.left,
             y=self.margins.top,
-            width=self.figsize[0] - self.margins.left - self.margins.right,
-            height=self.figsize[1] - self.margins.top - self.margins.bottom,
+            width=self.figsize.width - self.margins.left - self.margins.right,
+            height=self.figsize.height - self.margins.top - self.margins.bottom,
         )
         return fig, ax
 

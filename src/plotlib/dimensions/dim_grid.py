@@ -11,9 +11,9 @@ class DimensionsGrid:
     def __init__(
         self,
         margins: Margins,
-        grid_shape: IntShape,
-        figsize: FloatShape,
-        grid_spacing: Spacing,
+        grid_shape: IntShape | tuple[int, int],
+        figsize: FloatShape | tuple[float, float],
+        grid_spacing: Spacing | tuple[float, float],
     ):
         assert isinstance(margins, Margins)
         assert isinstance(grid_spacing, Spacing)
