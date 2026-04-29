@@ -240,7 +240,6 @@ class DimensionsSingleBesidesGrid:
         system_matrix = np.vstack(system_matrix_rows)
         target_vector = system_matrix[:, -1]
         coeff_matrix = system_matrix[:, :-1]
-        print(system_matrix)
         # Check if there is a solution
         if np.linalg.matrix_rank(coeff_matrix) < np.linalg.matrix_rank(
             np.column_stack((coeff_matrix, target_vector))
@@ -250,8 +249,6 @@ class DimensionsSingleBesidesGrid:
             )
             solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
         else:
-            print(coeff_matrix.shape)
-            # solution = np.linalg.solve(coeff_matrix, target_vector)
             solution = np.linalg.lstsq(coeff_matrix, target_vector, rcond=None)[0]
 
             if np.any(solution < 0):

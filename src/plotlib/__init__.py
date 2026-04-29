@@ -28,6 +28,7 @@ from .plotlib import (
     remove_ticks_labels,
 )
 from .quicksfigs import quickfig_grid, quickfig_single, quickfig_single_besides_grid
+from .ruler import add_ruler
 from .styles import (
     ALLOWED_STYLES,
     STYLE_DARK,
@@ -73,4 +74,5 @@ __all__ = [
     "flip_xlims",
     "flip_ylims",
     "remove_ticks",
+    "add_ruler",
 ]
