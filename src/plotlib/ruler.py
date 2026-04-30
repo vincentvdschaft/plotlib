@@ -1,3 +1,4 @@
+import matplotlib.patheffects as pe
 import numpy as np
 
 
@@ -11,6 +12,7 @@ def add_ruler(
     label_side="above",
     label_offset=0.05,
     fontsize=None,
+    black_edge=True,
 ):
     """Add a ruler (scale bar) to an axes.
 
@@ -56,7 +58,7 @@ def add_ruler(
         nx, ny = nx / norm, ny / norm
 
     sign = 1 if label_side == "above" else -1
-    ax.text(
+    text_handle = ax.text(
         x_mid + sign * nx * label_offset,
         y_mid + sign * ny * label_offset,
         label,
@@ -65,3 +67,10 @@ def add_ruler(
         va="bottom" if label_side == "above" else "top",
         fontsize=fontsize,
     )
+    if black_edge:
+        text_handle.set_path_effects(
+            [
+                pe.withStroke(linewidth=3, foreground="black"),
+                pe.Normal(),
+            ]
+        )
