@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 
 from ..plotlib import MPLFigure
@@ -82,7 +84,7 @@ class DimensionsSingleBesidesGrid:
     @classmethod
     def from_solve(
         cls,
-        grid_shape: IntShape,
+        grid_shape: IntShape | Tuple[float, float],
         fig_width=None,
         fig_height=None,
         margins_left=None,
@@ -98,7 +100,8 @@ class DimensionsSingleBesidesGrid:
         middle_spacing=None,
         single_axis_aspect=None,
         grid_axis_aspect=None,
-        spacings_equal=True,
+        grid_spacings_equal=True,
+        all_spacings_equal=False,
         margin_left_right_equal=False,
     ):
         # 0  fig_width
@@ -188,8 +191,12 @@ class DimensionsSingleBesidesGrid:
         # ======================================================================
         # Further constraints
         # ======================================================================
-        if spacings_equal is not None:
+        if grid_spacings_equal is not None:
             system_matrix_rows.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0, 0])
+
+        if all_spacings_equal:
+            system_matrix_rows.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 1, 0])
+            system_matrix_rows.append([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 0])
 
         if margin_left_right_equal:
             system_matrix_rows.append([0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
