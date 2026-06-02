@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 
 from ..plotlib import MPLFigure
@@ -18,28 +20,28 @@ class DimensionsGrid:
         assert isinstance(margins, Margins)
         assert isinstance(grid_spacing, Spacing)
         self._margins = margins
-        self._grid_shape = grid_shape
+        self._grid_shape = IntShape(grid_shape[0], grid_shape[1])
         self._figsize = FloatShape(figsize[0], figsize[1])
         self._grid_spacing = Spacing(grid_spacing[0], grid_spacing[1])
 
     @property
-    def margins(self):
+    def margins(self) -> Margins:
         return self._margins.copy()
 
     @property
-    def grid_shape(self):
+    def grid_shape(self) -> IntShape:
         return self._grid_shape
 
     @property
-    def figsize(self):
+    def figsize(self) -> FloatShape:
         return self._figsize
 
     @property
-    def grid_spacing(self):
+    def grid_spacing(self) -> Spacing:
         return self._grid_spacing
 
     @property
-    def axis_size(self):
+    def axis_size(self) -> FloatShape:
         axis_width = (
             self._figsize[0]
             - self._margins.width
@@ -68,7 +70,7 @@ class DimensionsGrid:
         grid_vertical_spacing=None,
         axis_aspect=None,
         spacings_equal=True,
-    ):
+    ) -> DimensionsGrid:
         axis_aspect = extent_to_aspect_if_needed(axis_aspect)
         grid_shape = IntShape(grid_shape[0], grid_shape[1])
 
@@ -175,7 +177,7 @@ class DimensionsGrid:
             grid_spacing=Spacing(horizontal=solution[6], vertical=solution[7]),
         )
 
-    def initialize_figure(self):
+    def initialize_figure(self) -> tuple[MPLFigure, np.ndarray]:
         fig = MPLFigure(figsize=self.figsize)
         axes = fig.add_axes_grid(
             n_rows=self.grid_shape.n_rows,
@@ -200,7 +202,7 @@ class DimensionsGrid:
         )
         return fig, axes
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"DimensionsGrid(margins={self.margins}, figsize={self.figsize}, "
             f"grid_shape={self.grid_shape}, grid_spacing={self.grid_spacing})"
