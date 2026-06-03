@@ -644,22 +644,26 @@ def box_fit_tick_labels(ax: Axes | Iterable, x: bool = True, y: bool = False) ->
 
 def _box_fit_tick_xlabels(ax: Axes) -> None:
     labels = ax.get_xticklabels()
+    is_flipped = ax.xaxis_inverted()
+    first_ha, last_ha = ("right", "left") if is_flipped else ("left", "right")
     for i, label in enumerate(labels):
         if i == 0:
-            label.set_ha("left")
+            label.set_ha(first_ha)
         elif i == len(labels) - 1:
-            label.set_ha("right")
+            label.set_ha(last_ha)
         else:
             label.set_ha("center")
 
 
 def _box_fit_tick_ylabels(ax: Axes) -> None:
     labels = ax.get_yticklabels()
+    is_flipped = ax.yaxis_inverted()
+    first_va, last_va = ("top", "bottom") if is_flipped else ("bottom", "top")
     for i, label in enumerate(labels):
         if i == 0:
-            label.set_va("bottom")
+            label.set_va(first_va)
         elif i == len(labels) - 1:
-            label.set_va("top")
+            label.set_va(last_va)
         else:
             label.set_va("center")
 
