@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 
 from ..plotlib import MPLFigure
@@ -51,7 +53,7 @@ class DimensionsSingle:
         margins_top=None,
         margins_bottom=None,
         axis_aspect=None,
-    ):
+    ) -> DimensionsSingle:
         axis_aspect = extent_to_aspect_if_needed(axis_aspect)
         system_matrix_rows = []
         row_ax_width = np.array([1, 0, -1, -1, 0, 0, 0])
