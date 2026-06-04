@@ -1,0 +1,42 @@
+# paper_dark.mplstyle
+# Dark theme with line colors from dark.mplstyle,
+# spacings and sizes from paper.mplstyle
+
+# --- Colors & theme (from dark) ---
+text.color: white
+axes.facecolor: black
+axes.edgecolor: white
+axes.labelcolor: "#BBBBBB"
+xtick.color: white
+ytick.color: white
+figure.facecolor: black
+axes.prop_cycle: cycler('color', ['E02222', '0EA7FF', 'FFE70E', '67D627', '9467bd', '8c564b', 'e377c2', '7f7f7f', 'bcbd22', '17becf'])
+
+# --- Sizes & spacings (from paper) ---
+font.family: serif
+font.size: 12.0
+axes.titlesize: small
+axes.titleweight: bold
+axes.titlepad: 3
+axes.labelsize: xx-small
+axes.labelpad: 2.0
+
+lines.markersize: 3.0
+
+xtick.major.size: 1.1
+ytick.major.size: 1.1
+
+xtick.minor.size: 0.6
+ytick.minor.size: 0.6
+
+xtick.labelsize: xx-small
+ytick.labelsize: xx-small
+
+legend.fontsize: 8
+legend.borderpad: 0.1
+legend.labelspacing: 0.05
+legend.handletextpad: 0.1
+legend.columnspacing: 1.0
+legend.frameon: false
+
+image.interpolation: none

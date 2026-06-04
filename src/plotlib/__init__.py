@@ -35,6 +35,7 @@ from .styles import (
     STYLE_LIGHT,
     STYLE_NAMES,
     STYLE_PAPER,
+    STYLE_PAPER_DARK,
     STYLE_POSTER,
     use_style,
 )
@@ -56,6 +57,7 @@ __all__ = [
     "STYLE_LIGHT",
     "STYLE_DARK",
     "STYLE_PAPER",
+    "STYLE_PAPER_DARK",
     "STYLE_POSTER",
     "ALLOWED_STYLES",
     "STYLE_NAMES",
