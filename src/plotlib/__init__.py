@@ -26,6 +26,7 @@ from .plotlib import (
     remove_internal_titles,
     remove_ticks,
     remove_ticks_labels,
+    um_formatter_ax,
 )
 from .quicksfigs import quickfig_grid, quickfig_single, quickfig_single_besides_grid
 from .ruler import add_ruler
@@ -72,6 +73,7 @@ __all__ = [
     "remove_ticks_labels",
     "interpret_width_height_aspect",
     "mm_formatter_ax",
+    "um_formatter_ax",
     "mmplot",
     "flip_xlims",
     "flip_ylims",

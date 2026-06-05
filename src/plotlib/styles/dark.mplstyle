@@ -10,3 +10,14 @@ xtick.color: white
 ytick.color: white
 figure.facecolor: black
 image.interpolation: none
+
+patch.facecolor: 2A2A2A
+
+boxplot.boxprops.color: white
+boxplot.whiskerprops.color: white
+boxplot.capprops.color: white
+boxplot.medianprops.color: FFE70E
+boxplot.medianprops.linewidth: 2.0
+boxplot.flierprops.color: white
+boxplot.flierprops.markerfacecolor: 555555
+boxplot.flierprops.markeredgecolor: white

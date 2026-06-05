@@ -729,18 +729,29 @@ def mm_formatter_ax(
 ) -> None:
     """Configures an axis to have millimeter units on the axes."""
     for ax in _flat_iterate(ax):
-        _mm_formatter_ax(ax, x=x, y=y, decimals=decimals)
+        _scale_formatter_ax(ax, x=x, y=y, decimals=decimals, scale=1e3)
 
 
-def _mm_formatter_ax(
-    ax: Axes, x: bool = True, y: bool = True, decimals: int = 0
+def _scale_formatter_ax(
+    ax: Axes, x: bool = True, y: bool = True, decimals: int = 0, scale: float = 1e3
 ) -> None:
     """Configures an axis to have millimeter units on the axes."""
-    formatter = plt.FuncFormatter(lambda x, _: f"{x * 1e3:.{decimals}f}")
+    formatter = plt.FuncFormatter(lambda x, _: f"{x * scale:.{decimals}f}")
     if x:
         ax.xaxis.set_major_formatter(formatter)
     if y:
         ax.yaxis.set_major_formatter(formatter)
+
+
+def um_formatter_ax(
+    ax: Axes | Iterable,
+    x: bool = True,
+    y: bool = True,
+    decimals: int = 0,
+) -> None:
+    """Configures an axis to have micrometer units on the axes."""
+    for ax in _flat_iterate(ax):
+        _scale_formatter_ax(ax, x=x, y=y, decimals=decimals, scale=1e6)
 
 
 def remove_axes(axes: Axes | Iterable) -> None:
