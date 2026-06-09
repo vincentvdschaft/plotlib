@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
 from typing import Tuple
 
 import numpy as np
@@ -9,7 +12,15 @@ from .shape import FloatShape, IntShape
 from .spacing import Spacing
 
 
+@dataclass
 class DimensionsSingleBesidesGrid:
+    margins: Margins
+    grid_shape: IntShape
+    figsize: FloatShape
+    grid_spacing: Spacing
+    middle_spacing: float
+    single_axis_shape: FloatShape
+
     def __init__(
         self,
         margins: Margins,
@@ -21,65 +32,49 @@ class DimensionsSingleBesidesGrid:
     ):
         assert isinstance(margins, Margins)
         assert isinstance(grid_spacing, Spacing)
-        self._margins = margins
-        self._grid_shape = IntShape(grid_shape[0], grid_shape[1])
-        self._figsize = FloatShape(figsize[0], figsize[1])
-        self._grid_spacing = Spacing(grid_spacing[0], grid_spacing[1])
-        self._single_axis_shape = FloatShape(single_axis_shape[0], single_axis_shape[1])
-        self._middle_spacing = float(middle_spacing)
-
-    @property
-    def margins(self):
-        return self._margins.copy()
-
-    @property
-    def grid_shape(self):
-        return self._grid_shape
-
-    @property
-    def figsize(self):
-        return self._figsize
-
-    @property
-    def single_axis_shape(self):
-        return self._single_axis_shape
-
-    @property
-    def middle_spacing(self):
-        return self._middle_spacing
-
-    @property
-    def grid_spacing(self):
-        return self._grid_spacing
+        self.margins = margins
+        self.grid_shape = IntShape(grid_shape[0], grid_shape[1])
+        self.figsize = FloatShape(figsize[0], figsize[1])
+        self.grid_spacing = Spacing(grid_spacing[0], grid_spacing[1])
+        self.single_axis_shape = FloatShape(single_axis_shape[0], single_axis_shape[1])
+        self.middle_spacing = float(middle_spacing)
 
     @property
     def grid_axis_shape(self):
         grid_width = (
-            self._figsize.width
-            - self._margins.width
-            - self._single_axis_shape.width
-            - self._middle_spacing
-            - self._grid_spacing.horizontal * (self._grid_shape.n_cols - 1)
-        ) / self._grid_shape.n_cols
+            self.figsize.width
+            - self.margins.width
+            - self.single_axis_shape.width
+            - self.middle_spacing
+            - self.grid_spacing.horizontal * (self.grid_shape.n_cols - 1)
+        ) / self.grid_shape.n_cols
 
         grid_height = (
-            self._figsize.height
-            - self._margins.height
-            - self._grid_spacing.vertical * (self._grid_shape.n_rows - 1)
-        ) / self._grid_shape.n_rows
+            self.figsize.height
+            - self.margins.height
+            - self.grid_spacing.vertical * (self.grid_shape.n_rows - 1)
+        ) / self.grid_shape.n_rows
 
         return FloatShape(grid_width, grid_height)
 
     @property
     def grid_total_size(self):
         grid_width = (
-            self._figsize.width
-            - self._margins.width
-            - self._single_axis_shape.width
-            - self._middle_spacing
+            self.figsize.width
+            - self.margins.width
+            - self.single_axis_shape.width
+            - self.middle_spacing
         )
-        grid_height = self._figsize.height - self._margins.height
+        grid_height = self.figsize.height - self.margins.height
         return FloatShape(width=grid_width, height=grid_height)
+
+    @property
+    def total_internal_width(self):
+        return (
+            self.single_axis_shape.width
+            + self.middle_spacing
+            + self.grid_total_size.width
+        )
 
     @classmethod
     def from_solve(
@@ -103,7 +98,7 @@ class DimensionsSingleBesidesGrid:
         grid_spacings_equal=True,
         all_spacings_equal=False,
         margin_left_right_equal=False,
-    ):
+    ) -> DimensionsSingleBesidesGrid:
         # 0  fig_width
         # 1  fig_height
         # 2  margins_left
