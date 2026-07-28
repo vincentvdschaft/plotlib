@@ -1,7 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
-from matplotlib.patches import Rectangle
 
 
 def convex_hull(points):

@@ -1,8 +1,4 @@
-from pathlib import Path
 
-import pytest
-import matplotlib.pyplot as plt
-import numpy as np
 
 from plotlib import *
 
