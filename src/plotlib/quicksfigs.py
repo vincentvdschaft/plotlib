@@ -1,4 +1,4 @@
-from typing import Tuple, TypeAlias
+from typing import TypeAlias
 
 import numpy as np
 import numpy.typing as npt
@@ -14,7 +14,7 @@ from plotlib.plotlib import MPLFigure
 AxesArray: TypeAlias = npt.NDArray[np.object_]
 
 
-def quickfig_single(dimensions: DimensionsSingle) -> Tuple[MPLFigure, Axes]:
+def quickfig_single(dimensions: DimensionsSingle) -> tuple[MPLFigure, Axes]:
     """Create a quick figure with single dimensions.
 
     Args:
@@ -36,7 +36,7 @@ def quickfig_single(dimensions: DimensionsSingle) -> Tuple[MPLFigure, Axes]:
     return fig, ax
 
 
-def quickfig_grid(dimensions: DimensionsGrid) -> Tuple[MPLFigure, AxesArray]:
+def quickfig_grid(dimensions: DimensionsGrid) -> tuple[MPLFigure, AxesArray]:
     """Create a quick figure with grid dimensions.
 
     Args:
@@ -64,7 +64,7 @@ def quickfig_grid(dimensions: DimensionsGrid) -> Tuple[MPLFigure, AxesArray]:
 
 def quickfig_single_besides_grid(
     dimensions: DimensionsSingleBesidesGrid, grid_on_right: bool = True
-) -> Tuple[MPLFigure, Axes, AxesArray]:
+) -> tuple[MPLFigure, Axes, AxesArray]:
     """Create a quick figure with single beside grid dimensions.
 
     Args:

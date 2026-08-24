@@ -7,12 +7,12 @@ from .shape import FloatShape, IntShape
 from .spacing import Spacing
 
 __all__ = [
-    "DimensionsSingle",
     "DimensionsGrid",
+    "DimensionsSingle",
     "DimensionsSingleBesidesGrid",
-    "Margins",
     "FloatShape",
     "IntShape",
+    "Margins",
     "Spacing",
     "extent_to_aspect",
     "extent_to_aspect_if_needed",

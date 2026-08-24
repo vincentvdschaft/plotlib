@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-
 from plotlib import (
     DimensionsSingleBesidesGrid,
     quickfig_single_besides_grid,

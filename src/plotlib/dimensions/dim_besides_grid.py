@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Tuple
 
 import numpy as np
 
@@ -79,7 +78,7 @@ class DimensionsSingleBesidesGrid:
     @classmethod
     def from_solve(
         cls,
-        grid_shape: IntShape | Tuple[float, float],
+        grid_shape: IntShape | tuple[float, float],
         fig_width=None,
         fig_height=None,
         margins_left=None,
