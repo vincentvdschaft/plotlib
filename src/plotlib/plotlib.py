@@ -732,6 +732,17 @@ def mm_formatter_ax(
         _scale_formatter_ax(ax, x=x, y=y, decimals=decimals, scale=1e3)
 
 
+def um_formatter_ax(
+    ax: Axes | Iterable,
+    x: bool = True,
+    y: bool = True,
+    decimals: int = 0,
+) -> None:
+    """Configures an axis to have micrometer units on the axes."""
+    for ax in _flat_iterate(ax):
+        _scale_formatter_ax(ax, x=x, y=y, decimals=decimals, scale=1e6)
+
+
 def _scale_formatter_ax(
     ax: Axes, x: bool = True, y: bool = True, decimals: int = 0, scale: float = 1e3
 ) -> None:
