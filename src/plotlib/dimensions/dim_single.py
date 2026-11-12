@@ -110,13 +110,27 @@ class DimensionsSingle:
             The created figure and axis.
         """
         fig = MPLFigure(figsize=self.figsize)
-        ax = fig.add_ax(
-            x=self.margins.left,
-            y=self.margins.top,
+        return fig, self.add_to_figure(fig)
+
+    def add_to_figure(
+        self, fig: MPLFigure, offset: tuple[float, float] = (0.0, 0.0)
+    ) -> Axes:
+        """Add the axis to an existing figure.
+
+        Args:
+            fig: The figure to add the axis to.
+            offset: Position (x, y) in inches of the top-left corner of these
+                dimensions within the figure, measured from the figure's top-left.
+
+        Returns:
+            The created axis.
+        """
+        return fig.add_ax(
+            x=offset[0] + self.margins.left,
+            y=offset[1] + self.margins.top,
             width=self.axis_size.width,
             height=self.axis_size.height,
         )
-        return fig, ax
 
     def __repr__(self):
         return f"DimensionsSingle(margins={self.margins}, figsize={self.figsize})"

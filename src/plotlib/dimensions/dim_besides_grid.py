@@ -283,22 +283,43 @@ class DimensionsSingleBesidesGrid:
             The created figure, the single axis and the array of grid axes.
         """
         fig = MPLFigure(figsize=self.figsize)
+        ax_single, axes_grid = self.add_to_figure(fig, grid_on_right=grid_on_right)
+        return fig, ax_single, axes_grid
+
+    def add_to_figure(
+        self,
+        fig: MPLFigure,
+        offset: tuple[float, float] = (0.0, 0.0),
+        grid_on_right: bool = True,
+    ) -> tuple[Axes, np.ndarray]:
+        """Add the single axis and the grid of axes to an existing figure.
+
+        Args:
+            fig: The figure to add the axes to.
+            offset: Position (x, y) in inches of the top-left corner of these
+                dimensions within the figure, measured from the figure's top-left.
+            grid_on_right: Place the grid right of the single axis if True,
+                otherwise left of it.
+
+        Returns:
+            The single axis and the array of grid axes.
+        """
         ax_single = fig.add_ax(
-            x=self._single_x(grid_on_right),
-            y=self.margins.top,
+            x=offset[0] + self._single_x(grid_on_right),
+            y=offset[1] + self.margins.top,
             width=self.single_axis_shape.width,
             height=self.single_axis_shape.height,
         )
         axes_grid = fig.add_axes_grid(
             n_rows=self.grid_shape.n_rows,
             n_cols=self.grid_shape.n_cols,
-            x=self._grid_x(grid_on_right),
-            y=self.margins.top,
+            x=offset[0] + self._grid_x(grid_on_right),
+            y=offset[1] + self.margins.top,
             width=self.grid_axis_shape.width,
             height=self.grid_axis_shape.height,
             spacing=self.grid_spacing,
         )
-        return fig, ax_single, axes_grid
+        return ax_single, axes_grid
 
     def _grid_x(self, grid_on_right: bool) -> float:
         if not grid_on_right:

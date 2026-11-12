@@ -184,16 +184,30 @@ class DimensionsGrid:
             The created figure and the array of axes.
         """
         fig = MPLFigure(figsize=self.figsize)
-        axes = fig.add_axes_grid(
+        return fig, self.add_to_figure(fig)
+
+    def add_to_figure(
+        self, fig: MPLFigure, offset: tuple[float, float] = (0.0, 0.0)
+    ) -> np.ndarray:
+        """Add the grid of axes to an existing figure.
+
+        Args:
+            fig: The figure to add the axes to.
+            offset: Position (x, y) in inches of the top-left corner of these
+                dimensions within the figure, measured from the figure's top-left.
+
+        Returns:
+            The array of created axes.
+        """
+        return fig.add_axes_grid(
             n_rows=self.grid_shape.n_rows,
             n_cols=self.grid_shape.n_cols,
-            x=self.margins.left,
-            y=self.margins.top,
+            x=offset[0] + self.margins.left,
+            y=offset[1] + self.margins.top,
             width=self.axis_size.width,
             height=self.axis_size.height,
             spacing=self.grid_spacing,
         )
-        return fig, axes
 
     def __repr__(self) -> str:
         return (
