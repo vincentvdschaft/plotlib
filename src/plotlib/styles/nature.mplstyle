@@ -1,0 +1,86 @@
+# Nature Communications figure style
+# https://www.nature.com/ncomms/submit/how-to-submit
+# Single column 88 mm, double column 180 mm, max page 210 x 276 mm.
+
+# Lettering: clear sans-serif (Helvetica), same typeface and size in all figures
+font.family: sans-serif
+font.sans-serif: Helvetica, Arial, Nimbus Sans, Liberation Sans, DejaVu Sans
+font.size: 7.0
+mathtext.fontset: custom
+mathtext.rm: sans
+mathtext.it: sans:italic
+mathtext.bf: sans:bold
+mathtext.sf: sans
+mathtext.default: regular
+axes.unicode_minus: True
+
+axes.titlesize: 7
+axes.titleweight: normal
+axes.titlepad: 3
+axes.labelsize: 7
+axes.labelpad: 2.0
+xtick.labelsize: 6
+ytick.labelsize: 6
+legend.fontsize: 6
+legend.title_fontsize: 6
+figure.titlesize: 8
+figure.titleweight: bold
+
+# Thinnest lines in the final figure must be at least 1 pt wide
+lines.linewidth: 1.25
+lines.markersize: 3.5
+lines.markeredgewidth: 1.0
+axes.linewidth: 1.0
+patch.linewidth: 1.0
+hatch.linewidth: 1.0
+grid.linewidth: 1.0
+boxplot.whiskerprops.linewidth: 1.0
+boxplot.boxprops.linewidth: 1.0
+boxplot.capprops.linewidth: 1.0
+boxplot.medianprops.linewidth: 1.0
+boxplot.flierprops.linewidth: 1.0
+errorbar.capsize: 2.0
+
+xtick.major.width: 1.0
+ytick.major.width: 1.0
+xtick.minor.width: 1.0
+ytick.minor.width: 1.0
+xtick.major.size: 2.5
+ytick.major.size: 2.5
+xtick.minor.size: 1.5
+ytick.minor.size: 1.5
+xtick.major.pad: 2.0
+ytick.major.pad: 2.0
+xtick.direction: out
+ytick.direction: out
+
+# Avoid excessive boxing
+axes.spines.top: False
+axes.spines.right: False
+axes.grid: False
+legend.frameon: False
+legend.borderpad: 0.2
+legend.labelspacing: 0.3
+legend.handlelength: 1.5
+legend.handletextpad: 0.4
+legend.columnspacing: 1.0
+
+# White background for all display items
+figure.facecolor: white
+axes.facecolor: white
+savefig.facecolor: white
+savefig.edgecolor: white
+savefig.transparent: False
+
+# Colourblind-safe colours (Okabe-Ito), no red/green reliance
+axes.prop_cycle: cycler('color', ['0072B2', 'E69F00', '009E73', 'CC79A7', '56B4E9', 'D55E00', 'F0E442', '000000'])
+image.cmap: viridis
+image.interpolation: none
+
+# Vector output with editable text; 1200 DPI when a bitmap is unavoidable
+savefig.format: pdf
+savefig.dpi: 1200
+figure.dpi: 150
+pdf.fonttype: 42
+ps.fonttype: 42
+svg.fonttype: none

@@ -1,6 +1,4 @@
-
-
-from plotlib import *
+from plotlib import ALLOWED_STYLES, STYLE_NAMES, MPLFigure, use_style
 
 
 def _create_example_lineplot(title, x_vals, y_vals):
@@ -18,7 +16,6 @@ def _create_example_lineplot(title, x_vals, y_vals):
 
 
 def test_example_lineplots(tmpdir, fixture_x_vals, fixture_y_vals):
-
     for style in ALLOWED_STYLES:
         use_style(style)
         fig = _create_example_lineplot(

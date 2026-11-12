@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib
 import matplotlib.pyplot as plt
 
-from plotlib.constants import *
+from plotlib.constants import ALLOWED_STYLES, STYLE_NAMES
 
 
 def _get_style_dir():

@@ -1,6 +1,30 @@
-from .animation import *
-from .boxconnection import *
-from .constants import IEEE_COLUMN_WIDTH, IEEE_DOUBLE_COLUMN_WIDTH
+from .animation import (
+    linear_clipped,
+    map_range,
+    smooth,
+    smooth_position_loop,
+    smooth_range,
+    smooth_segment,
+)
+from .boxconnection import (
+    bbox_get_corners,
+    convex_hull,
+    create_random_bbox,
+    get_bbox_connections,
+    points_to_line_segments,
+)
+from .constants import (
+    ALLOWED_STYLES,
+    IEEE_COLUMN_WIDTH,
+    IEEE_DOUBLE_COLUMN_WIDTH,
+    STYLE_DARK,
+    STYLE_LIGHT,
+    STYLE_NAMES,
+    STYLE_NATURE,
+    STYLE_PAPER,
+    STYLE_PAPER_DARK,
+    STYLE_POSTER,
+)
 from .dimensions import (
     DimensionsGrid,
     DimensionsSingle,
@@ -30,16 +54,7 @@ from .plotlib import (
 )
 from .quicksfigs import quickfig_grid, quickfig_single, quickfig_single_besides_grid
 from .ruler import add_ruler
-from .styles import (
-    ALLOWED_STYLES,
-    STYLE_DARK,
-    STYLE_LIGHT,
-    STYLE_NAMES,
-    STYLE_PAPER,
-    STYLE_PAPER_DARK,
-    STYLE_POSTER,
-    use_style,
-)
+from .styles import use_style
 
 __all__ = [
     "ALLOWED_STYLES",
@@ -48,6 +63,7 @@ __all__ = [
     "STYLE_DARK",
     "STYLE_LIGHT",
     "STYLE_NAMES",
+    "STYLE_NATURE",
     "STYLE_PAPER",
     "STYLE_PAPER_DARK",
     "STYLE_POSTER",
@@ -60,12 +76,19 @@ __all__ = [
     "Margins",
     "Spacing",
     "add_ruler",
+    "bbox_get_corners",
     "box_fit_tick_labels",
+    "convex_hull",
+    "create_random_bbox",
     "flip_xlims",
     "flip_ylims",
+    "get_bbox_connections",
     "interpret_width_height_aspect",
+    "linear_clipped",
+    "map_range",
     "mm_formatter_ax",
     "mmplot",
+    "points_to_line_segments",
     "quickfig_grid",
     "quickfig_single",
     "quickfig_single_besides_grid",
@@ -77,6 +100,10 @@ __all__ = [
     "remove_internal_titles",
     "remove_ticks",
     "remove_ticks_labels",
+    "smooth",
+    "smooth_position_loop",
+    "smooth_range",
+    "smooth_segment",
     "um_formatter_ax",
     "use_style",
 ]

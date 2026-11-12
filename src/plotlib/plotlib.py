@@ -754,17 +754,6 @@ def _scale_formatter_ax(
         ax.yaxis.set_major_formatter(formatter)
 
 
-def um_formatter_ax(
-    ax: Axes | Iterable,
-    x: bool = True,
-    y: bool = True,
-    decimals: int = 0,
-) -> None:
-    """Configures an axis to have micrometer units on the axes."""
-    for ax in _flat_iterate(ax):
-        _scale_formatter_ax(ax, x=x, y=y, decimals=decimals, scale=1e6)
-
-
 def remove_axes(axes: Axes | Iterable) -> None:
     """Removes the axes from the figure."""
 
