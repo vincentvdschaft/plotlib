@@ -178,26 +178,19 @@ class DimensionsGrid:
         )
 
     def initialize_figure(self) -> tuple[MPLFigure, np.ndarray]:
+        """Create a figure with a grid of axes according to these dimensions.
+
+        Returns:
+            The created figure and the array of axes.
+        """
         fig = MPLFigure(figsize=self.figsize)
         axes = fig.add_axes_grid(
             n_rows=self.grid_shape.n_rows,
             n_cols=self.grid_shape.n_cols,
             x=self.margins.left,
             y=self.margins.top,
-            width=(
-                self.figsize[0]
-                - self.margins.left
-                - self.margins.right
-                - self.grid_spacing.horizontal * (self.grid_shape.n_cols - 1)
-            )
-            / self.grid_shape.n_cols,
-            height=(
-                self.figsize[1]
-                - self.margins.top
-                - self.margins.bottom
-                - self.grid_spacing.vertical * (self.grid_shape.n_rows - 1)
-            )
-            / self.grid_shape.n_rows,
+            width=self.axis_size.width,
+            height=self.axis_size.height,
             spacing=self.grid_spacing,
         )
         return fig, axes

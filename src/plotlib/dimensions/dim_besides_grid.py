@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from matplotlib.axes import Axes
 
 from ..plotlib import MPLFigure
 from .aspect import extent_to_aspect_if_needed
@@ -269,42 +270,45 @@ class DimensionsSingleBesidesGrid:
             single_axis_shape=FloatShape(width=solution[6], height=solution[7]),
         )
 
-    def initialize_figure(self):
+    def initialize_figure(
+        self, grid_on_right: bool = True
+    ) -> tuple[MPLFigure, Axes, np.ndarray]:
+        """Create a figure with a single axis beside a grid of axes.
+
+        Args:
+            grid_on_right: Place the grid right of the single axis if True,
+                otherwise left of it.
+
+        Returns:
+            The created figure, the single axis and the array of grid axes.
+        """
         fig = MPLFigure(figsize=self.figsize)
-        grid_total_width = (
-            self.figsize.width
-            - self.margins.width
-            - self.single_axis_shape.width
-            - self.middle_spacing
-        )
-        grid_total_height = self.figsize.height - self.margins.height
-
-        axes_grid = fig.add_axes_grid(
-            n_rows=self.grid_shape.n_rows,
-            n_cols=self.grid_shape.n_cols,
-            x=self.margins.left + self.single_axis_shape.width + self.middle_spacing,
-            y=self.margins.top,
-            width=(
-                grid_total_width
-                - (self.grid_spacing.horizontal * (self.grid_shape.n_cols - 1))
-            )
-            / self.grid_shape.n_cols,
-            height=(
-                grid_total_height
-                - (self.grid_spacing.vertical * (self.grid_shape.n_rows - 1))
-            )
-            / self.grid_shape.n_rows,
-            spacing=self.grid_spacing,
-        )
-
         ax_single = fig.add_ax(
-            x=self.margins.left,
+            x=self._single_x(grid_on_right),
             y=self.margins.top,
             width=self.single_axis_shape.width,
             height=self.single_axis_shape.height,
         )
+        axes_grid = fig.add_axes_grid(
+            n_rows=self.grid_shape.n_rows,
+            n_cols=self.grid_shape.n_cols,
+            x=self._grid_x(grid_on_right),
+            y=self.margins.top,
+            width=self.grid_axis_shape.width,
+            height=self.grid_axis_shape.height,
+            spacing=self.grid_spacing,
+        )
+        return fig, ax_single, axes_grid
 
-        return fig, axes_grid, ax_single
+    def _grid_x(self, grid_on_right: bool) -> float:
+        if not grid_on_right:
+            return self.margins.left
+        return self.margins.left + self.single_axis_shape.width + self.middle_spacing
+
+    def _single_x(self, grid_on_right: bool) -> float:
+        if grid_on_right:
+            return self.margins.left
+        return self.margins.left + self.grid_total_size.width + self.middle_spacing
 
 
 def _any_is_none(iterable):

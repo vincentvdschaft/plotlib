@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+from matplotlib.axes import Axes
 
 from ..plotlib import MPLFigure
 from .aspect import extent_to_aspect_if_needed
@@ -102,13 +103,18 @@ class DimensionsSingle:
             figsize=FloatShape(width=solution[0], height=solution[1]),
         )
 
-    def initialize_figure(self):
+    def initialize_figure(self) -> tuple[MPLFigure, Axes]:
+        """Create a figure with a single axis according to these dimensions.
+
+        Returns:
+            The created figure and axis.
+        """
         fig = MPLFigure(figsize=self.figsize)
         ax = fig.add_ax(
             x=self.margins.left,
             y=self.margins.top,
-            width=self.figsize.width - self.margins.left - self.margins.right,
-            height=self.figsize.height - self.margins.top - self.margins.bottom,
+            width=self.axis_size.width,
+            height=self.axis_size.height,
         )
         return fig, ax
 
