@@ -17,6 +17,8 @@ from .constants import (
     ALLOWED_STYLES,
     IEEE_COLUMN_WIDTH,
     IEEE_DOUBLE_COLUMN_WIDTH,
+    NATURE_COLUMN_WIDTH,
+    NATURE_DOUBLE_COLUMN_WIDTH,
     STYLE_DARK,
     STYLE_LIGHT,
     STYLE_NAMES,
@@ -106,4 +108,6 @@ __all__ = [
     "smooth_segment",
     "um_formatter_ax",
     "use_style",
+    "NATURE_COLUMN_WIDTH",
+    "NATURE_DOUBLE_COLUMN_WIDTH",
 ]

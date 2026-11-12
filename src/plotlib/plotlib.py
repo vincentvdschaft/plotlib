@@ -226,12 +226,26 @@ class MPLFigure:
         y_norm = 1.0 - y / self.figsize[1]
         return self.fig.text(x_norm, y_norm, text, **kwargs)
 
-    def savefig(self, *args, margin: float | None = None, **kwargs) -> None:
-        """Save the figure."""
-        if "bbox_inches" not in kwargs:
-            if margin is not None:
-                kwargs["bbox_inches"] = self.get_total_bbox(margin=margin)
-        self.fig.savefig(*args, **kwargs)
+    def savefig(
+        self,
+        *args,
+        margin: float | None = None,
+        transparent: bool | None = None,
+        **kwargs,
+    ) -> None:
+        """Save the figure.
+
+        Args:
+            *args: Positional arguments passed to `matplotlib.figure.Figure.savefig`.
+            margin: Margin in inches around all content, used as `bbox_inches`
+                if that is not given explicitly.
+            transparent: Make the figure and axes backgrounds transparent. If None,
+                `rcParams["savefig.transparent"]` is used.
+            **kwargs: Keyword arguments passed to `matplotlib.figure.Figure.savefig`.
+        """
+        if "bbox_inches" not in kwargs and margin is not None:
+            kwargs["bbox_inches"] = self.get_total_bbox(margin=margin)
+        self.fig.savefig(*args, transparent=transparent, **kwargs)
 
     def get_ax_width(self, ax: Axes) -> float:
         """Returns the width of the Axes in inches.
